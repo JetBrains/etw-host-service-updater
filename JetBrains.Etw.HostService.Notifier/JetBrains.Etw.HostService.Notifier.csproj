@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFrameworks>net461;net5.0-windows</TargetFrameworks>
+    <RootNamespace>JetBrains.Etw.HostService.Notifier</RootNamespace>
+    <UseWPF>true</UseWPF>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>EtwHostServiceNotifier</AssemblyName>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
+    <ApplicationIcon>EtwHostService.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
+    <PackageReference Include="JetBrains.Microsoft.Deployment.WindowsInstaller" Version="3.11.0" />
+    <PackageReference Include="JetBrains.DownloadPgpVerifier" Version="0.0.1" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="EtwHostService.ico" />
+  </ItemGroup>
+</Project>

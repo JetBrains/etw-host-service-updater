@@ -1,0 +1,195 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.Json;
+using JetBrains.Annotations;
+using JetBrains.DownloadPgpVerifier;
+
+namespace JetBrains.Etw.HostService.Notifier.Util
+{
+  public static class UpdateChecker
+  {
+    public enum Channel
+    {
+      Release,
+      EapAndRelease
+    }
+
+    public static readonly Uri PublicBaseUri = new("https://data.services.jetbrains.com");
+
+    [CanBeNull]
+    public static Result Check(
+      [NotNull] ILogger logger,
+      [NotNull] Uri baseUri,
+      [NotNull] string productCode,
+      [NotNull] Version productVersion,
+      Channel channel = Channel.Release)
+    {
+      if (logger == null) throw new ArgumentNullException(nameof(logger));
+      if (baseUri == null) throw new ArgumentNullException(nameof(baseUri));
+      if (productCode == null) throw new ArgumentNullException(nameof(productCode));
+      if (productVersion == null) throw new ArgumentNullException(nameof(productVersion));
+      if (!baseUri.IsAbsoluteUri) throw new ArgumentOutOfRangeException(nameof(baseUri));
+
+      var loggerContext = Logger.Context;
+      logger.Info($"{loggerContext} productCode={productCode} productVersion={productVersion} channel={channel}");
+
+      var query = ConvertToUriQuery(new SortedList<string, string>
+        {
+          {"code", productCode},
+          {"majorVersion", productVersion.Major.ToString()},
+          {"os", GetOsName()},
+          {"arch", GetOsArchitecture()}
+        });
+      var checkUri = new UriBuilder(baseUri) {Path = "products", Query = query}.Uri;
+      logger.Info($"{loggerContext} checkUri={checkUri}");
+
+      return checkUri.OpenStreamFromWeb(stream =>
+        {
+          var releases = GetReleaseTypes(channel);
+          var download = RuntimeInformation.OSArchitecture switch
+            {
+              Architecture.X86 => "windows32",
+              Architecture.X64 => "windows64",
+              _ => throw new ArgumentOutOfRangeException()
+            };
+
+          using var json = JsonDocument.Parse(stream);
+          foreach (var productElement in json.RootElement.EnumerateArray())
+            try
+            {
+              var code = productElement.GetPropertyEx("code").GetString();
+              if (code != productCode) continue;
+              foreach (var releaseElement in productElement.GetPropertyEx("releases").EnumerateArray())
+                try
+                {
+                  var version = releaseElement.GetPropertyEx("version").GetVersion();
+                  if (version.Major != productVersion.Major) continue;
+
+                  var type = releaseElement.GetPropertyEx("type").GetString();
+                  if (releases.All(x => x != type)) continue;
+
+                  // Note(ww898): Expect that versions are in descending order!
+                  if (version <= productVersion)
+                  {
+                    logger.Info($"{loggerContext} res=ignore version={version}");
+                    return null;
+                  }
+
+                  foreach (var downloadProperty in releaseElement.GetPropertyEx("downloads").EnumerateObject())
+                    try
+                    {
+                      if (downloadProperty.Name != download) continue;
+                      var downloadElement = downloadProperty.Value;
+                      var size = downloadElement.GetPropertyEx("size").GetInt64();
+                      var link = downloadElement.GetPropertyEx("link").GetAbsoluteUri();
+                      var checksumLink = downloadElement.GetPropertyEx("checksumLink").GetAbsoluteUri();
+                      var signedChecksumLink = downloadElement.GetPropertyEx("signedChecksumLink").GetAbsoluteUri();
+                      if (size < 0) throw new ArithmeticException("Negative file size");
+
+                      logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
+                      return new Result
+                        {
+                          Version = version,
+                          Size = size ,
+                          Link = link,
+                          ChecksumLink = checksumLink,
+                          SignedChecksumLink = signedChecksumLink
+                        };
+                    }
+                    catch (Exception e)
+                    {
+                      logger.Exception(e);
+                    }
+                }
+                catch (Exception e)
+                {
+                  logger.Exception(e);
+                }
+            }
+            catch (Exception e)
+            {
+              logger.Exception(e);
+            }
+
+          logger.Info($"{loggerContext} res=no");
+          return null;
+        });
+    }
+
+    private static JsonElement GetPropertyEx(this JsonElement element, [NotNull] string propertyName)
+    {
+      if (element.TryGetProperty(propertyName, out var childElement))
+        return childElement;
+      throw new KeyNotFoundException($"Failed to find property with name {propertyName}");
+    }
+
+    [NotNull]
+    private static Uri GetAbsoluteUri(this JsonElement element)
+    {
+      var str = element.GetString();
+      if (Uri.TryCreate(str, UriKind.Absolute, out var res))
+        return res;
+      throw new FormatException($"Failed to parse the absolute URI value {str}");
+    }
+
+    [NotNull]
+    private static Version GetVersion(this JsonElement element)
+    {
+      var str = element.GetString();
+      if (Version.TryParse(str!, out var res))
+        return res;
+      throw new FormatException($"Failed to parse the version value {str}");
+    }
+
+    [NotNull]
+    private static string GetOsName()
+    {
+      if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        throw new PlatformNotSupportedException();
+      var osVersion = Environment.OSVersion.Version;
+      return $"Windows {osVersion.Major}.{osVersion.Minor}.{osVersion.Build}";
+    }
+
+    [NotNull]
+    private static string GetOsArchitecture()
+    {
+      return RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
+    }
+
+    [NotNull]
+    private static string[] GetReleaseTypes(Channel channel)
+    {
+      return channel switch
+        {
+          Channel.Release => new[] {"release"},
+          Channel.EapAndRelease => new[] {"eap", "release"},
+          _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
+        };
+    }
+
+    [NotNull]
+    private static string ConvertToUriQuery([NotNull] IEnumerable<KeyValuePair<string, string>> queries)
+    {
+      return queries
+        .Aggregate(new StringBuilder(), (builder, pair) => builder
+          .Append(builder.Length == 0 ? '?' : '&')
+          .Append(WebUtility.UrlEncode(pair.Key))
+          .Append('=')
+          .Append(WebUtility.UrlEncode(pair.Value)))
+        .ToString();
+    }
+
+    public class Result
+    {
+      public Uri ChecksumLink;
+      public Uri Link;
+      public Uri SignedChecksumLink;
+      public long Size;
+      public Version Version;
+    }
+  }
+}

@@ -32,7 +32,7 @@ namespace JetBrains.Etw.HostService.Notifier
         try
         {
           var installedVersion = options.CheckForVersion ?? VersionControl.GetInstalledVersion(logger);
-          updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion, UpdateChecker.Channel.EapAndRelease) : null;
+          updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion) : null;
         }
         catch (Exception e)
         {
@@ -69,6 +69,13 @@ namespace JetBrains.Etw.HostService.Notifier
       myLogger.Info(Logger.Context);
       using (myViewModel.RunModalDialog())
         new AboutWindow(myLogger).ShowDialog();
+    }
+
+    private void OnWhatsNew(object sender, RoutedEventArgs e)
+    {
+      myLogger.Info(Logger.Context);
+      using (myViewModel.RunModalDialog())
+        new WhatsNewWindow(myLogger, myUpdateRequest).ShowDialog();
     }
 
     private void OnDownloadAndInstall(object sender, RoutedEventArgs e)

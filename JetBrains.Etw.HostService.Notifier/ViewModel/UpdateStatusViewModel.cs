@@ -8,7 +8,7 @@ using JetBrains.Etw.HostService.Notifier.Util;
 
 namespace JetBrains.Etw.HostService.Notifier.ViewModel
 {
-  public sealed class UpdateStatusViewModel : INotifyPropertyChanged
+  internal sealed class UpdateStatusViewModel : INotifyPropertyChanged
   {
     private readonly Dispatcher myDispatcher;
     private int myModalCounter;

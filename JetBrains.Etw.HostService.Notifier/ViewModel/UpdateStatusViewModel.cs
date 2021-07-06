@@ -37,7 +37,7 @@ namespace JetBrains.Etw.HostService.Notifier.ViewModel
         });
     }
 
-    public void SetUpdateRequest([CanBeNull] UpdateChecker.Result updateRequest)
+    public void SetUpdateRequest([CanBeNull] UpdateRequest updateRequest)
     {
       myDispatcher.BeginInvoke(new Action(() =>
         {

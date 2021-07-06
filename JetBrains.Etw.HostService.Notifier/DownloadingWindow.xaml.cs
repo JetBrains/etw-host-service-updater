@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -20,11 +19,10 @@ namespace JetBrains.Etw.HostService.Notifier
   {
     private const string SpecialContext = nameof(PgpSignaturesVerifier) + Logger.Delimiter + nameof(PgpSignaturesVerifier.Verify);
     private readonly CancellationTokenSource myCancellationTokenSource = new();
-
-    [NotNull]
     private readonly ILogger myLogger;
+    private string myMsiFile;
 
-    public DownloadingWindow([NotNull] ILogger logger, [NotNull] UpdateChecker.Result updateRequest, bool downloadDelay = false)
+    public DownloadingWindow([NotNull] ILogger logger, [NotNull] UpdateRequest updateRequest, bool downloadDelay = false)
     {
       if (updateRequest == null) throw new ArgumentNullException(nameof(updateRequest));
       myLogger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -33,10 +31,10 @@ namespace JetBrains.Etw.HostService.Notifier
       var viewModel = new DownloadingViewModel();
       DataContext = viewModel;
 
-      var disableSystemCloseButton = true;
+      var deactivateSystemCloseButton = true;
       Closing += (_, args) =>
         {
-          args.Cancel = disableSystemCloseButton;
+          args.Cancel = deactivateSystemCloseButton;
           myCancellationTokenSource.Cancel();
         };
 
@@ -44,48 +42,37 @@ namespace JetBrains.Etw.HostService.Notifier
 
       async void DoAsync()
       {
-        var ct = myCancellationTokenSource.Token;
         try
         {
-          var msiFile = await Task.Run(() => DownloadAndVerifyMsi(logger, updateRequest, viewModel, ct, downloadDelay), ct);
-          using var process = Process.Start(new ProcessStartInfo
-            {
-              UseShellExecute = true,
-              FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "msiexec.exe"),
-              Arguments = $"/i \"{msiFile}\""
-            });
-          if (process == null)
-            throw new Exception("Failed to run msiexec.exe");
+          myMsiFile = await Task.Run(() => DownloadAndVerifyMsi(logger, updateRequest, viewModel, myCancellationTokenSource.Token, downloadDelay), myCancellationTokenSource.Token);
+          logger.Info($"{loggerContext} res=downloaded");
         }
         catch (OperationCanceledException)
         {
-          disableSystemCloseButton = false;
-          DialogResult = false;
-          logger.Warning($"{loggerContext} res=downloading_cancelled");
-          return;
+          logger.Info($"{loggerContext} res=cancelled");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-          disableSystemCloseButton = false;
-          DialogResult = false;
-          var be = e.GetBaseException();
-          logger.Exception(be);
-          MessageBox.Show(be.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-          return;
+          logger.Info($"{loggerContext} res=error");
+          logger.Exception(ex);
+          MessageBox.Show(ex.GetBaseException().Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
-
-        disableSystemCloseButton = false;
-        DialogResult = true;
-        logger.Info($"{loggerContext} res=exit_run");
-        Application.Current.Shutdown();
+        finally
+        {
+          deactivateSystemCloseButton = false;
+          DialogResult = myMsiFile != null;
+        }
       }
 
       DoAsync();
     }
 
     [NotNull]
+    public string MsiFile => DialogResult == true ? myMsiFile : throw new InvalidOperationException();
+
+    [NotNull]
     private static string DownloadAndVerifyMsi(ILogger logger,
-      [NotNull] UpdateChecker.Result updateRequest,
+      [NotNull] UpdateRequest updateRequest,
       [NotNull] IProgress mainProgress,
       CancellationToken ct,
       bool downloadDelay = false)

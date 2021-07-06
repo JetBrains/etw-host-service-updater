@@ -8,8 +8,13 @@ namespace JetBrains.Etw.HostService.Notifier.Util
 {
   public static class VersionControl
   {
-    private const int VersionV16 = 16;
-    private const string UpgradeCodeV16 = "{25CB994F-CDCF-421B-9156-76528AAFC0E1}";
+    public const int MajorVersion = 16;
+
+    // Major version | Upgrade code
+    // ==============+========================================
+    //       16      | {25CB994F-CDCF-421B-9156-76528AAFC0E1}
+    //       17      | ???
+    private const string UpgradeCode = "{25CB994F-CDCF-421B-9156-76528AAFC0E1}";
 
     [CanBeNull]
     public static Version GetInstalledVersion([NotNull] ILogger logger)
@@ -18,7 +23,7 @@ namespace JetBrains.Etw.HostService.Notifier.Util
       IEnumerable<ProductInstallation> productInstallations;
       try
       {
-        productInstallations = ProductInstallation.GetRelatedProducts(UpgradeCodeV16);
+        productInstallations = ProductInstallation.GetRelatedProducts(UpgradeCode);
       }
       catch (ArgumentException)
       {
@@ -26,9 +31,9 @@ namespace JetBrains.Etw.HostService.Notifier.Util
       }
 
       var foundVersions = productInstallations.Select(x => x.ProductVersion).OrderByDescending(x => x).ToList();
-      logger.Info($"{Logger.Context} upgradeCode={UpgradeCodeV16} versions={string.Join(",", foundVersions.Select(x => x.ToString()))}");
+      logger.Info($"{Logger.Context} upgradeCode={UpgradeCode} versions={string.Join(",", foundVersions.Select(x => x.ToString()))}");
 
-      if (foundVersions.Any(x => x.Major != VersionV16))
+      if (foundVersions.Any(x => x.Major != MajorVersion))
         throw new Exception("Unexpected major version");
       return foundVersions.FirstOrDefault();
     }

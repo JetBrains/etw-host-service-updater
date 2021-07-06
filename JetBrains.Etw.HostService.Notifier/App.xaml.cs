@@ -24,20 +24,34 @@ namespace JetBrains.Etw.HostService.Notifier
       const string checkIntervalInSec = "--check-interval-in-sec=";
       var options = new Options();
       foreach (var arg in e.Args)
-        if (arg.StartsWith(checkForVersion))
-          options.CheckForVersion = Version.Parse(arg.Substring(checkForVersion.Length));
-        else if (arg.StartsWith(baseUri))
-          options.BaseUri = new Uri(arg.Substring(baseUri.Length), UriKind.Absolute);
-        else if (arg.StartsWith(checkIntervalInSec))
+        try
         {
-          var value = ulong.Parse(arg.Substring(checkIntervalInSec.Length));
-          if (value > 0)
+          if (arg.StartsWith(checkForVersion))
+          {
+            var version = Version.Parse(arg.Substring(checkForVersion.Length));
+            if (version.Major != VersionControl.MajorVersion)
+              throw new Exception($"Invalid major version, expect {VersionControl.MajorVersion}");
+            options.CheckForVersion = version;
+          }
+          else if (arg.StartsWith(baseUri))
+            options.BaseUri = new Uri(arg.Substring(baseUri.Length), UriKind.Absolute);
+          else if (arg.StartsWith(checkIntervalInSec))
+          {
+            var value = ulong.Parse(arg.Substring(checkIntervalInSec.Length));
+            const ulong minUpdateIntervalInSec = 15;
+            if (value < minUpdateIntervalInSec)
+              throw new Exception($"Too small update interval {value}, not less then {minUpdateIntervalInSec} is expected");
             options.CheckInterval = TimeSpan.FromSeconds(value);
+          }
+          else
+            throw new ArgumentOutOfRangeException($"Unknown command line argument {arg}");
         }
-        else
-          throw new ArgumentOutOfRangeException($"Unknown command line argument {arg}");
+        catch (Exception ex)
+        {
+          logger.Exception(ex);
+        }
 
-      var singleRunEvent = new EventWaitHandle(true, EventResetMode.ManualReset, "JB_EtwHostServiceNotifier", out var createdNew);
+      var singleRunEvent = new EventWaitHandle(true, EventResetMode.ManualReset, "JB_EtwHostServiceNotifier." + VersionControl.MajorVersion, out var createdNew);
       Exit += (_, _) => singleRunEvent.Close();
       if (!createdNew)
       {

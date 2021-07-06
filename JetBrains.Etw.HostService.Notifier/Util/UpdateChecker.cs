@@ -18,10 +18,11 @@ namespace JetBrains.Etw.HostService.Notifier.Util
       EapAndRelease
     }
 
+    public static readonly TimeSpan DefaultCheckInterval = TimeSpan.FromDays(1);
     public static readonly Uri PublicBaseUri = new("https://data.services.jetbrains.com");
 
     [CanBeNull]
-    public static Result Check(
+    public static UpdateRequest Check(
       [NotNull] ILogger logger,
       [NotNull] Uri baseUri,
       [NotNull] string productCode,
@@ -79,6 +80,7 @@ namespace JetBrains.Etw.HostService.Notifier.Util
                     return null;
                   }
 
+                  var whatsNewHtml = releaseElement.GetPropertyEx("whatsnew").GetString();
                   foreach (var downloadProperty in releaseElement.GetPropertyEx("downloads").EnumerateObject())
                     try
                     {
@@ -91,13 +93,14 @@ namespace JetBrains.Etw.HostService.Notifier.Util
                       if (size < 0) throw new ArithmeticException("Negative file size");
 
                       logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
-                      return new Result
+                      return new UpdateRequest
                         {
                           Version = version,
-                          Size = size ,
+                          Size = size,
                           Link = link,
                           ChecksumLink = checksumLink,
-                          SignedChecksumLink = signedChecksumLink
+                          SignedChecksumLink = signedChecksumLink,
+                          WhatsNewHtml = whatsNewHtml
                         };
                     }
                     catch (Exception e)
@@ -175,21 +178,16 @@ namespace JetBrains.Etw.HostService.Notifier.Util
     private static string ConvertToUriQuery([NotNull] IEnumerable<KeyValuePair<string, string>> queries)
     {
       return queries
-        .Aggregate(new StringBuilder(), (builder, pair) => builder
-          .Append(builder.Length == 0 ? '?' : '&')
-          .Append(WebUtility.UrlEncode(pair.Key))
-          .Append('=')
-          .Append(WebUtility.UrlEncode(pair.Value)))
+        .Aggregate(new StringBuilder(), (builder, pair) =>
+          {
+            if (builder.Length != 0)
+              builder.Append('&');
+            return builder
+              .Append(WebUtility.UrlEncode(pair.Key))
+              .Append('=')
+              .Append(WebUtility.UrlEncode(pair.Value));
+          })
         .ToString();
-    }
-
-    public class Result
-    {
-      public Uri ChecksumLink;
-      public Uri Link;
-      public Uri SignedChecksumLink;
-      public long Size;
-      public Version Version;
     }
   }
 }

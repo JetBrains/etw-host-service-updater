@@ -48,7 +48,7 @@
       <ContextMenu Visibility="{Binding Path=IsNotModalState,Converter={StaticResource BooleanToVisibilityConverter}}">
         <MenuItem Header="_About..." Click="OnAbout" />
         <Separator />
-        <MenuItem Header="_Install update..." Click="OnInstall" Visibility="{Binding Path=HasUpdate,Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <MenuItem Header="_Download and install update..." Click="OnDownloadAndInstall" Visibility="{Binding Path=HasUpdate,Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Separator Visibility="{Binding Path=HasUpdate,Converter={StaticResource BooleanToVisibilityConverter}}" />
         <MenuItem Header="_Quit" Click="OnQuit" />
       </ContextMenu>

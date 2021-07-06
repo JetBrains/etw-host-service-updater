@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
@@ -13,7 +15,7 @@ namespace JetBrains.Etw.HostService.Notifier
     private readonly bool myDownloadDelay;
     private readonly ILogger myLogger;
     private readonly UpdateStatusViewModel myViewModel = new();
-    private UpdateChecker.Result myUpdateRequest;
+    private UpdateRequest myUpdateRequest;
 
     public MainWindow([NotNull] ILogger logger, [NotNull] Options options)
     {
@@ -26,7 +28,7 @@ namespace JetBrains.Etw.HostService.Notifier
 
       void CheckForUpdate()
       {
-        UpdateChecker.Result updateRequest;
+        UpdateRequest updateRequest;
         try
         {
           var installedVersion = options.CheckForVersion ?? VersionControl.GetInstalledVersion(logger);
@@ -56,7 +58,7 @@ namespace JetBrains.Etw.HostService.Notifier
       InitializeComponent();
       DataContext = myViewModel;
 
-      var timer = new DispatcherTimer {Interval = options.CheckInterval ?? TimeSpan.FromHours(23)};
+      var timer = new DispatcherTimer {Interval = options.CheckInterval ?? UpdateChecker.DefaultCheckInterval};
       timer.Tick += (_, _) => CheckForUpdate();
       Closed += (_, _) => timer.Stop();
       timer.Start();
@@ -66,14 +68,38 @@ namespace JetBrains.Etw.HostService.Notifier
     {
       myLogger.Info(Logger.Context);
       using (myViewModel.RunModalDialog())
-        new AboutWindow().ShowDialog();
+        new AboutWindow(myLogger).ShowDialog();
     }
 
-    private void OnInstall(object sender, RoutedEventArgs e)
+    private void OnDownloadAndInstall(object sender, RoutedEventArgs e)
     {
       myLogger.Info(Logger.Context);
       using (myViewModel.RunModalDialog())
-        new DownloadingWindow(myLogger, myUpdateRequest, myDownloadDelay).ShowDialog();
+      {
+        var dlg = new DownloadingWindow(myLogger, myUpdateRequest, myDownloadDelay);
+        if (dlg.ShowDialog() == true)
+          try
+          {
+            myLogger.Info($"{Logger.Context} res=running");
+            using var process = Process.Start(new ProcessStartInfo
+              {
+                UseShellExecute = true,
+                FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "msiexec.exe"),
+                Arguments = $"/i \"{dlg.MsiFile}\""
+              });
+            if (process == null)
+              throw new Exception("Failed to run msiexec.exe");
+            myLogger.Info($"{Logger.Context} res=exit_run");
+            Application.Current.Shutdown();
+          }
+          catch (Exception ex)
+          {
+            myLogger.Exception(ex);
+            MessageBox.Show(ex.GetBaseException().Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+          }
+        else
+          myLogger.Info($"{Logger.Context} res=cancel");
+      }
     }
 
     private void OnQuit(object sender, RoutedEventArgs e)

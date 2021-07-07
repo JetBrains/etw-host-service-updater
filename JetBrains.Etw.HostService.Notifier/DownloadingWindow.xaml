@@ -5,7 +5,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModel="clr-namespace:JetBrains.Etw.HostService.Notifier.ViewModel"
         mc:Ignorable="d"
-        ShowInTaskbar="False"
         Visibility="Visible"
         WindowStartupLocation="CenterScreen"
         Icon="/EtwHostService.ico"

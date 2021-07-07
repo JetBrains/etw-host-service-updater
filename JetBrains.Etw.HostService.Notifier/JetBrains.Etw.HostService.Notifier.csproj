@@ -3,12 +3,18 @@
     <OutputType>WinExe</OutputType>
     <TargetFrameworks>net461;net5.0-windows</TargetFrameworks>
     <RootNamespace>JetBrains.Etw.HostService.Notifier</RootNamespace>
+    <AssemblyName>EtwHostServiceNotifier</AssemblyName>
     <UseWPF>true</UseWPF>
     <IsPackable>false</IsPackable>
     <LangVersion>latest</LangVersion>
-    <AssemblyName>EtwHostServiceNotifier</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\Subplatform.Snk</AssemblyOriginatorKeyFile>
     <ApplicationManifest>App.manifest</ApplicationManifest>
     <ApplicationIcon>EtwHostService.ico</ApplicationIcon>
+    <Company>JetBrains s.r.o.</Company>
+    <Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) JetBrains s.r.o.</Copyright>
+    <Authors>Mikhail Pilin</Authors>
+    <Version>16.0.0-preview1</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />

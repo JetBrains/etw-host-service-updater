@@ -8,22 +8,23 @@ namespace JetBrains.Etw.HostService.Notifier.Util
 {
   public static class VersionControl
   {
-    public const int MajorVersion = 16;
-
-    // Major version | Upgrade code
-    // ==============+========================================
-    //       16      | {25CB994F-CDCF-421B-9156-76528AAFC0E1}
-    //       17      | ???
-    private const string UpgradeCode = "{25CB994F-CDCF-421B-9156-76528AAFC0E1}";
+    public static readonly int MajorVersion = typeof(App).Assembly.GetName().Version.Major;
 
     [CanBeNull]
     public static Version GetInstalledVersion([NotNull] ILogger logger)
     {
       if (logger == null) throw new ArgumentNullException(nameof(logger));
+
+      var upgradeCode = MajorVersion switch
+        {
+          16 => "{25CB994F-CDCF-421B-9156-76528AAFC0E1}",
+          _ => throw new ArgumentOutOfRangeException(nameof(MajorVersion), $"Unknown major version {MajorVersion}")
+        };
+
       IEnumerable<ProductInstallation> productInstallations;
       try
       {
-        productInstallations = ProductInstallation.GetRelatedProducts(UpgradeCode);
+        productInstallations = ProductInstallation.GetRelatedProducts(upgradeCode);
       }
       catch (ArgumentException)
       {
@@ -31,11 +32,18 @@ namespace JetBrains.Etw.HostService.Notifier.Util
       }
 
       var foundVersions = productInstallations.Select(x => x.ProductVersion).OrderByDescending(x => x).ToList();
-      logger.Info($"{Logger.Context} upgradeCode={UpgradeCode} versions={string.Join(",", foundVersions.Select(x => x.ToString()))}");
+      logger.Info($"{Logger.Context} upgradeCode={upgradeCode} versions={string.Join(",", foundVersions.Select(x => x.ToString()))}");
 
-      if (foundVersions.Any(x => x.Major != MajorVersion))
-        throw new Exception("Unexpected major version");
-      return foundVersions.FirstOrDefault();
+      return foundVersions.Select(CheckVersion).SingleOrDefault();
+    }
+
+    [CanBeNull]
+    public static Version CheckVersion([CanBeNull] Version version)
+    {
+      if (version != null)
+        if (version.Major != MajorVersion)
+          throw new Exception($"Invalid the major version {version.Major}, expect {MajorVersion}");
+      return version;
     }
   }
 }

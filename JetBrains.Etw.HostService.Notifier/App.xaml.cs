@@ -19,6 +19,15 @@ namespace JetBrains.Etw.HostService.Notifier
       var loggerContext = Logger.Context;
       logger.Info($"{loggerContext} version={typeof(App).Assembly.GetName().Version.ToString(3)}");
 
+      var singleRunEvent = new EventWaitHandle(true, EventResetMode.ManualReset, "JB_EtwHostServiceNotifier." + VersionControl.MajorVersion, out var createdNew);
+      Exit += (_, _) => singleRunEvent.Close();
+      if (!createdNew)
+      {
+        logger.Info($"{loggerContext} res=exit_already_run");
+        Current.Shutdown(1);
+        return;
+      }
+
       const string checkForVersion = "--check-for-version=";
       const string baseUri = "--base-uri=";
       const string checkIntervalInSec = "--check-interval-in-sec=";
@@ -27,12 +36,7 @@ namespace JetBrains.Etw.HostService.Notifier
         try
         {
           if (arg.StartsWith(checkForVersion))
-          {
-            var version = Version.Parse(arg.Substring(checkForVersion.Length));
-            if (version.Major != VersionControl.MajorVersion)
-              throw new Exception($"Invalid major version, expect {VersionControl.MajorVersion}");
-            options.CheckForVersion = version;
-          }
+            options.CheckForVersion = VersionControl.CheckVersion(Version.Parse(arg.Substring(checkForVersion.Length)));
           else if (arg.StartsWith(baseUri))
             options.BaseUri = new Uri(arg.Substring(baseUri.Length), UriKind.Absolute);
           else if (arg.StartsWith(checkIntervalInSec))
@@ -50,15 +54,6 @@ namespace JetBrains.Etw.HostService.Notifier
         {
           logger.Exception(ex);
         }
-
-      var singleRunEvent = new EventWaitHandle(true, EventResetMode.ManualReset, "JB_EtwHostServiceNotifier." + VersionControl.MajorVersion, out var createdNew);
-      Exit += (_, _) => singleRunEvent.Close();
-      if (!createdNew)
-      {
-        logger.Info($"{loggerContext} res=exit_already_run");
-        Current.Shutdown(1);
-        return;
-      }
 
       MainWindow = new MainWindow(logger, options);
     }

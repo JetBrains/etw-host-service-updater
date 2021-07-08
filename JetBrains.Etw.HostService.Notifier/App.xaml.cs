@@ -10,7 +10,10 @@ namespace JetBrains.Etw.HostService.Notifier
   {
     private void OnStartup(object sender, StartupEventArgs e)
     {
-      var combine = Path.Combine(Path.GetTempPath(), typeof(App).Namespace + $"_{DateTime.Now:yyyyMMdd_HHmmss}.log");
+      var logDir = Path.Combine(Path.GetTempPath(), "JetLogs", "EtwHost");
+      Directory.CreateDirectory(logDir);
+      
+      var combine = Path.Combine(logDir, typeof(App).Namespace + $"_{DateTime.Now:yyyyMMdd_HHmmss}.log");
       var logFile = File.CreateText(combine);
       logFile.AutoFlush = true;
       ILogger logger = new TextLogger(logFile);

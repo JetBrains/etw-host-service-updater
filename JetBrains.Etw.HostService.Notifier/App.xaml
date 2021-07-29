@@ -3,6 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Startup="OnStartup">
   <Application.Resources>
-    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source='/Styles/CommonStyles.xaml' />
+      </ResourceDictionary.MergedDictionaries>
+      
+      <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+      
+    </ResourceDictionary>
   </Application.Resources>
 </Application>

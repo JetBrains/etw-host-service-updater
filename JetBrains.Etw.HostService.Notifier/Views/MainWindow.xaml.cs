@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using JetBrains.Etw.HostService.Notifier.Util;
 using JetBrains.Etw.HostService.Notifier.ViewModel;
 
-namespace JetBrains.Etw.HostService.Notifier
+namespace JetBrains.Etw.HostService.Notifier.Views
 {
   internal partial class MainWindow : Window
   {

@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Windows;
 using JetBrains.Etw.HostService.Notifier.Util;
+using JetBrains.Etw.HostService.Notifier.Views;
 
 namespace JetBrains.Etw.HostService.Notifier
 {

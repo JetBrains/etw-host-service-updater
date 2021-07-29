@@ -5,7 +5,7 @@ using System.Windows.Navigation;
 using JetBrains.Annotations;
 using JetBrains.Etw.HostService.Notifier.Util;
 
-namespace JetBrains.Etw.HostService.Notifier
+namespace JetBrains.Etw.HostService.Notifier.Views
 {
   internal partial class AboutWindow : Window
   {

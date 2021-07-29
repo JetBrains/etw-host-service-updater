@@ -1,0 +1,46 @@
+﻿<Window x:Class="JetBrains.Etw.HostService.Notifier.Views.DownloadingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModel="clr-namespace:JetBrains.Etw.HostService.Notifier.ViewModel"
+        mc:Ignorable="d"
+        Visibility="Visible"
+        WindowStartupLocation="CenterScreen"
+        Title="Downloading update"
+        SizeToContent="Height"
+        ResizeMode="NoResize"
+        Width="500"
+        x:ClassModifier="internal">
+
+  <Window.DataContext>
+    <viewModel:DownloadingViewModel />
+  </Window.DataContext>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+    
+    <Grid Margin="20 20 20 0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      
+      <TextBlock Grid.Row="0">Downloading update...</TextBlock>
+
+      <ProgressBar Grid.Row="1" Margin="0 10 0 0" Height="28" Foreground="#FF009933" Minimum="0" Maximum="1" Value="{Binding Path=Progress,Mode=OneWay}" />
+      
+      <TextBlock Grid.Row="1" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=ProgressStr,Mode=OneWay}" />
+    </Grid>
+    
+    <DockPanel Grid.Row="1" LastChildFill="False" Margin="20">
+      <Button DockPanel.Dock="Right"
+              Width="76" Height="28"
+              Content="_Cancel" Click="OnCancel" />
+    </DockPanel>
+  </Grid>
+</Window>

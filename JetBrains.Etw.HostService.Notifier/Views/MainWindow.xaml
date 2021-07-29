@@ -1,5 +1,5 @@
 ﻿<Window
-  x:Class="JetBrains.Etw.HostService.Notifier.MainWindow"
+  x:Class="JetBrains.Etw.HostService.Notifier.Views.MainWindow"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:tb="http://www.hardcodet.net/taskbar"
@@ -7,8 +7,9 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:viewModel="clr-namespace:JetBrains.Etw.HostService.Notifier.ViewModel"
   mc:Ignorable="d"
+  x:ClassModifier="internal"
   Visibility="Hidden"
-  x:ClassModifier="internal">
+  Background="#F7F7F7">
 
   <Window.DataContext>
     <viewModel:UpdateStatusViewModel />
@@ -18,32 +19,38 @@
     <tb:TaskbarIcon.TrayToolTip>
       <Border
         Visibility="{Binding Path=IsNotModalState,Converter={StaticResource BooleanToVisibilityConverter}}"
-        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="Auto" Height="Auto" Padding="5" CornerRadius="6" BorderThickness="3" Margin="0,0,5,5">
+        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+        Width="Auto" Height="Auto"
+        Margin="0,0,3,3"
+        Background="#F5F5F5">
+    
         <Border.Effect>
-          <DropShadowEffect Color="#FF7A7A7A" />
+          <DropShadowEffect Color="#B8B8B8" />
         </Border.Effect>
-        <Border.Background>
-          <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-            <GradientStop Color="#FFFFD283" Offset="0" />
-            <GradientStop Color="#FFFFFFFF" Offset="1" />
-          </LinearGradientBrush>
-        </Border.Background>
-        <Grid>
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-          </Grid.RowDefinitions>
-          <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Margin="5" Source="/EtwHostService.ico" Width="64" Height="64" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-          <TextBlock Grid.Column="1" Grid.Row="0" Margin="5" TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FF575757" Text="The ETW host service notifier" />
-          <TextBlock Grid.Column="1" Grid.Row="1" Margin="5" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" FontWeight="Medium" Foreground="#FF141414" Text="{Binding Path=UpdateMessage}" />
-        </Grid>
+    
+        <Border BorderThickness="1" BorderBrush="#959595">
+          <Grid Margin="16">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+        
+            <Image Grid.Column="0" Grid.Row="0" Source="/EtwHostService.ico" Width="48" Height="48" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical" VerticalAlignment="Center"
+                        Margin="16 0 24 0">
+              <TextBlock TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" FontWeight="Bold" 
+                         Text="The ETW host service notifier" />
+              <TextBlock Margin="0 4 0 0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" 
+                         Text="{Binding Path=UpdateMessage}" />
+            </StackPanel>
+          </Grid>
+        </Border>
       </Border>
     </tb:TaskbarIcon.TrayToolTip>
-
+  
     <tb:TaskbarIcon.ContextMenu>
       <ContextMenu Visibility="{Binding Path=IsNotModalState,Converter={StaticResource BooleanToVisibilityConverter}}">
         <MenuItem Header="_About..." Click="OnAbout" />
@@ -54,6 +61,6 @@
         <MenuItem Header="_Quit" Click="OnQuit" />
       </ContextMenu>
     </tb:TaskbarIcon.ContextMenu>
-
+  
   </tb:TaskbarIcon>
 </Window>

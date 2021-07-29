@@ -13,7 +13,7 @@ using JetBrains.Etw.HostService.Notifier.Util;
 using JetBrains.Etw.HostService.Notifier.ViewModel;
 using ILogger = JetBrains.Etw.HostService.Notifier.Util.ILogger;
 
-namespace JetBrains.Etw.HostService.Notifier
+namespace JetBrains.Etw.HostService.Notifier.Views
 {
   internal partial class DownloadingWindow : Window
   {

@@ -77,7 +77,7 @@ namespace JetBrains.Etw.HostService.Notifier.Views
       CancellationToken ct,
       bool downloadDelay = false)
     {
-      logger.Info($"{Logger.Context} size={updateRequest.Size}\n\tlink={updateRequest.Link}\n\tchecksumLink={updateRequest.ChecksumLink}\n\tsignedChecksumLink={updateRequest.SignedChecksumLink}");
+      logger.Info($"{Logger.Context}\n\tlink={updateRequest.Link}\n\tchecksumLink={updateRequest.ChecksumLink}\n\tsignedChecksumLink={updateRequest.SignedChecksumLink}");
       mainProgress.Start(100);
       var digestSha256 = updateRequest.ChecksumLink.OpenSeekableStreamFromWeb(dataStream =>
         {
@@ -102,7 +102,6 @@ namespace JetBrains.Etw.HostService.Notifier.Views
       ct.ThrowIfCancellationRequested();
 
       var fileProgress = new SubProgress(mainProgress, 90);
-      fileProgress.Start(updateRequest.Size);
       var downloadFile = Path.GetTempFileName();
       logger.Info($"{Logger.Context} downloadFile={downloadFile}");
       try
@@ -110,6 +109,9 @@ namespace JetBrains.Etw.HostService.Notifier.Views
         using var fileStream = File.Create(downloadFile);
         var fileSha256 = updateRequest.Link.OpenStreamFromWeb(stream =>
           {
+            logger.Info($"{Logger.Context} fileLength={stream.Length}");
+            fileProgress.Start(Math.Max(1, stream.Length));
+
             var buffer = new byte[4 * 1024];
             using var hasher = SHA256.Create();
             while (true)

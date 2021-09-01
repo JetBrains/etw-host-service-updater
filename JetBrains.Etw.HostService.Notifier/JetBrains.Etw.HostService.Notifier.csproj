@@ -18,11 +18,11 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
-    <PackageReference Include="HtmlSanitizer" Version="5.0.404" />
-    <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
+    <PackageReference Include="HtmlSanitizer" Version="6.0.441" />
+    <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
     <PackageReference Include="JetBrains.Microsoft.Deployment.WindowsInstaller" Version="3.11.0" />
-    <PackageReference Include="JetBrains.DownloadPgpVerifier" Version="0.0.1" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+    <PackageReference Include="JetBrains.DownloadPgpVerifier" Version="0.0.2" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>

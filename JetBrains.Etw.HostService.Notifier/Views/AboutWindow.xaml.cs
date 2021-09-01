@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Navigation;
 using JetBrains.Annotations;
 using JetBrains.Etw.HostService.Notifier.Util;
+using JetBrains.Etw.HostService.Notifier.ViewModel;
 
 namespace JetBrains.Etw.HostService.Notifier.Views
 {
@@ -15,9 +16,10 @@ namespace JetBrains.Etw.HostService.Notifier.Views
     {
       myLogger = logger ?? throw new ArgumentNullException(nameof(logger));
       InitializeComponent();
+      DataContext = new AboutViewModel();
     }
 
-    private void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+    public void OnRequestNavigate(object sender, RequestNavigateEventArgs e)
     {
       myLogger.Info(Logger.Context);
       Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));

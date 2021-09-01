@@ -12,7 +12,6 @@ namespace JetBrains.Etw.HostService.Notifier.ViewModel
     private readonly Dispatcher myDispatcher = Dispatcher.CurrentDispatcher;
 
     public double Progress { get; private set; }
-    public string ProgressStr => $"{100 * Progress:F1}%";
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -29,7 +28,6 @@ namespace JetBrains.Etw.HostService.Notifier.ViewModel
           base.Start(totalUnits);
           Progress = Fraction;
           OnPropertyChanged(nameof(Progress));
-          OnPropertyChanged(nameof(ProgressStr));
         }));
     }
 
@@ -40,7 +38,6 @@ namespace JetBrains.Etw.HostService.Notifier.ViewModel
           base.Advance(deltaUnits);
           Progress = Fraction;
           OnPropertyChanged(nameof(Progress));
-          OnPropertyChanged(nameof(ProgressStr));
         }));
     }
 
@@ -51,7 +48,6 @@ namespace JetBrains.Etw.HostService.Notifier.ViewModel
           base.Stop();
           Progress = Fraction;
           OnPropertyChanged(nameof(Progress));
-          OnPropertyChanged(nameof(ProgressStr));
         }));
     }
   }

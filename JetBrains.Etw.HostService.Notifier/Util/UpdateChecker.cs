@@ -45,7 +45,7 @@ namespace JetBrains.Etw.HostService.Notifier.Util
           {"os", GetOsName()},
           {"arch", GetOsArchitecture()}
         });
-      var checkUri = new UriBuilder(baseUri) {Path = "products", Query = query}.Uri;
+      var checkUri = new Uri(baseUri.ToDirectoryUri(), "products?" + query);
       logger.Info($"{loggerContext} checkUri={checkUri}");
 
       return checkUri.OpenStreamFromWeb(stream =>
@@ -86,17 +86,14 @@ namespace JetBrains.Etw.HostService.Notifier.Util
                     {
                       if (downloadProperty.Name != download) continue;
                       var downloadElement = downloadProperty.Value;
-                      var size = downloadElement.GetPropertyEx("size").GetInt64();
                       var link = downloadElement.GetPropertyEx("link").GetAbsoluteUri();
                       var checksumLink = downloadElement.GetPropertyEx("checksumLink").GetAbsoluteUri();
                       var signedChecksumLink = downloadElement.GetPropertyEx("signedChecksumLink").GetAbsoluteUri();
-                      if (size < 0) throw new ArithmeticException("Negative file size");
 
-                      logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
+                      logger.Info($"{loggerContext} res=found version={version}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
                       return new UpdateRequest
                         {
                           Version = version,
-                          Size = size,
                           Link = link,
                           ChecksumLink = checksumLink,
                           SignedChecksumLink = signedChecksumLink,

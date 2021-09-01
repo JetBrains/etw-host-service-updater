@@ -34,7 +34,7 @@
 
       <ProgressBar Grid.Row="1" Margin="0 10 0 0" Height="28" Foreground="#FF009933" Minimum="0" Maximum="1" Value="{Binding Path=Progress,Mode=OneWay}" />
       
-      <TextBlock Grid.Row="1" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=ProgressStr,Mode=OneWay}" />
+      <TextBlock Grid.Row="1" Margin="0 10 0 0" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Path=Progress,StringFormat={}{0:P1},Mode=OneWay}" />
     </Grid>
     
     <DockPanel Grid.Row="1" LastChildFill="False" Margin="20">

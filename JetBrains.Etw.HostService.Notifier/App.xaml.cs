@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using System.Windows;
+using JetBrains.Annotations;
 using JetBrains.Etw.HostService.Notifier.Util;
 using JetBrains.Etw.HostService.Notifier.Views;
 
@@ -9,6 +11,9 @@ namespace JetBrains.Etw.HostService.Notifier
 {
   public partial class App : Application
   {
+    [NotNull]
+    public static readonly string ToolVersion = typeof(App).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion.NotNull();
+
     private void OnStartup(object sender, StartupEventArgs e)
     {
       var logDir = Path.Combine(Path.GetTempPath(), "JetLogs", "EtwHost");
@@ -21,7 +26,7 @@ namespace JetBrains.Etw.HostService.Notifier
       Exit += (_, _) => logFile.Close();
 
       var loggerContext = Logger.Context;
-      logger.Info($"{loggerContext} version={typeof(App).Assembly.GetName().Version.ToString(3)}");
+      logger.Info($"{loggerContext} toolVersion={ToolVersion}");
 
       var singleRunEvent = new EventWaitHandle(true, EventResetMode.ManualReset, "JB_EtwHostServiceNotifier." + VersionControl.MajorVersion, out var createdNew);
       Exit += (_, _) => singleRunEvent.Close();

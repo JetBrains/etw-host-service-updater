@@ -42,6 +42,8 @@ namespace JetBrains.Etw.HostService.Notifier.Util
         {
           {"code", productCode},
           {"majorVersion", productVersion.Major.ToString()},
+          {"minorVersion", productVersion.Minor.ToString()},
+          {"buildVersion", productVersion.Build.ToString()},
           {"os", GetOsName()},
           {"arch", GetOsArchitecture()}
         });

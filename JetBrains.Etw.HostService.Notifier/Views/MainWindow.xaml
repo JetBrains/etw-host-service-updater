@@ -60,7 +60,7 @@
             <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical" VerticalAlignment="Center"
                         Margin="16 0 24 0">
               <TextBlock TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" FontWeight="Bold"
-                         Text="The ETW host service notifier" />
+                         Text="The ETW host service notifier by JetBrains" />
               <TextBlock Margin="0 4 0 0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
                          Text="{Binding Path=UpdateMessage}" />
             </StackPanel>

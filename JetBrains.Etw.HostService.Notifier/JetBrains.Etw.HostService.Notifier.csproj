@@ -14,7 +14,7 @@
     <Company>JetBrains s.r.o.</Company>
     <Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) JetBrains s.r.o.</Copyright>
     <Authors>Mikhail Pilin</Authors>
-    <Version>16.0.0-preview5</Version>
+    <Version>16.0.0-preview7</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />

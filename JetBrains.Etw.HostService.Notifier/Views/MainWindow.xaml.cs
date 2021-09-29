@@ -26,7 +26,7 @@ namespace JetBrains.Etw.HostService.Notifier.Views
       myDownloadDelay = options.CheckInterval != null;
 
       var loggerContext = Logger.Context;
-      var permanentUserIdAccess = new AnonymousPermanentUserIdAccessor(logger);
+      var anonymousPermanentUserId = new AnonymousPermanentUserIdAccessor(logger);
 
       void CheckForUpdate()
       {
@@ -34,7 +34,7 @@ namespace JetBrains.Etw.HostService.Notifier.Views
         try
         {
           var installedVersion = options.CheckForVersion ?? VersionControl.GetInstalledVersion(logger);
-          updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion, permanentUserIdAccess.GetOrGenerate()) : null;
+          updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion, anonymousPermanentUserId.GetOrGenerate()) : null;
         }
         catch (Exception e)
         {

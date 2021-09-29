@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -27,6 +28,7 @@ namespace JetBrains.Etw.HostService.Notifier.Util
       [NotNull] Uri baseUri,
       [NotNull] string productCode,
       [NotNull] Version productVersion,
+      Guid anonymousPermanentUserId,
       Channel channel = Channel.Release)
     {
       if (logger == null) throw new ArgumentNullException(nameof(logger));
@@ -40,12 +42,13 @@ namespace JetBrains.Etw.HostService.Notifier.Util
 
       var query = ConvertToUriQuery(new SortedList<string, string>
         {
-          {"code", productCode},
-          {"majorVersion", productVersion.Major.ToString()},
-          {"minorVersion", productVersion.Minor.ToString()},
-          {"buildVersion", productVersion.Build.ToString()},
-          {"os", GetOsName()},
-          {"arch", GetOsArchitecture()}
+          { "code", productCode },
+          { "majorVersion", productVersion.Major.ToString() },
+          { "minorVersion", productVersion.Minor.ToString() },
+          { "buildVersion", productVersion.Build.ToString() },
+          { "uid", anonymousPermanentUserId.ToString("D") },
+          { "os", GetOsName() },
+          { "arch", GetOsArchitecture() }
         });
       var checkUri = new Uri(baseUri.ToDirectoryUri(), "products?" + query);
       logger.Info($"{loggerContext} checkUri={checkUri}");
@@ -89,14 +92,16 @@ namespace JetBrains.Etw.HostService.Notifier.Util
                       if (downloadProperty.Name != download) continue;
                       var downloadElement = downloadProperty.Value;
                       var link = downloadElement.GetPropertyEx("link").GetAbsoluteUri();
+                      var size = downloadElement.GetPropertyEx("size").GetInt64();
                       var checksumLink = downloadElement.GetPropertyEx("checksumLink").GetAbsoluteUri();
                       var signedChecksumLink = downloadElement.GetPropertyEx("signedChecksumLink").GetAbsoluteUri();
 
-                      logger.Info($"{loggerContext} res=found version={version}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
+                      logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
                       return new UpdateRequest
                         {
                           Version = version,
                           Link = link,
+                          Size = size,
                           ChecksumLink = checksumLink,
                           SignedChecksumLink = signedChecksumLink,
                           WhatsNewHtml = whatsNewHtml
@@ -167,8 +172,8 @@ namespace JetBrains.Etw.HostService.Notifier.Util
     {
       return channel switch
         {
-          Channel.Release => new[] {"release"},
-          Channel.EapAndRelease => new[] {"eap", "release"},
+          Channel.Release => new[] { "release" },
+          Channel.EapAndRelease => new[] { "eap", "release" },
           _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
         };
     }

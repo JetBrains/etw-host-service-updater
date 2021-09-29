@@ -14,14 +14,14 @@
     <Company>JetBrains s.r.o.</Company>
     <Copyright>Copyright © $([System.DateTime]::Now.ToString('yyyy')) JetBrains s.r.o.</Copyright>
     <Authors>Mikhail Pilin</Authors>
-    <Version>16.0.0-preview3</Version>
+    <Version>16.0.0-preview4</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="HtmlSanitizer" Version="6.0.441" />
     <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
     <PackageReference Include="JetBrains.Microsoft.Deployment.WindowsInstaller" Version="3.11.0" />
-    <PackageReference Include="JetBrains.DownloadPgpVerifier" Version="0.0.2" />
+    <PackageReference Include="JetBrains.DownloadPgpVerifier" Version="0.0.3" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="All" />
     <PackageReference Include="System.Text.Json" Version="5.0.2" />
   </ItemGroup>

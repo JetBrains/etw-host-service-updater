@@ -5,6 +5,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using JetBrains.Annotations;
+using JetBrains.Etw.HostService.Notifier.SharedStorage;
 using JetBrains.Etw.HostService.Notifier.Util;
 using JetBrains.Etw.HostService.Notifier.ViewModel;
 
@@ -21,10 +22,11 @@ namespace JetBrains.Etw.HostService.Notifier.Views
     {
       if (options == null) throw new ArgumentNullException(nameof(options));
       myLogger = logger ?? throw new ArgumentNullException(nameof(logger));
-
+     
       myDownloadDelay = options.CheckInterval != null;
 
       var loggerContext = Logger.Context;
+      var permanentUserIdAccess = new AnonymousPermanentUserIdAccessor(logger);
 
       void CheckForUpdate()
       {
@@ -32,7 +34,7 @@ namespace JetBrains.Etw.HostService.Notifier.Views
         try
         {
           var installedVersion = options.CheckForVersion ?? VersionControl.GetInstalledVersion(logger);
-          updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion) : null;
+          updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion, permanentUserIdAccess.GetOrGenerate()) : null;
         }
         catch (Exception e)
         {

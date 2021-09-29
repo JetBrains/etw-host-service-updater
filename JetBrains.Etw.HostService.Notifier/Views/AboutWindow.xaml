@@ -35,7 +35,7 @@
 
         <Viewbox Stretch="Uniform">
           <Viewbox.Resources>
-            <LinearGradientBrush x:Key="BackgroundLinear" StartPoint="249,141" EndPoint="249,-42.5" MappingMode="RelativeToBoundingBox">
+            <LinearGradientBrush x:Key="TitleBackgroundLinear" StartPoint="249,141" EndPoint="249,-42.5" MappingMode="RelativeToBoundingBox">
               <LinearGradientBrush.GradientStops>
                 <GradientStopCollection>
                   <GradientStop Offset="0.0923918" Color="#FDB60D" />
@@ -43,12 +43,12 @@
                 </GradientStopCollection>
               </LinearGradientBrush.GradientStops>
               <LinearGradientBrush.Transform>
-                <ScaleTransform ScaleY="0.015" />
+                <ScaleTransform ScaleX="0.015" ScaleY="0.015" />
               </LinearGradientBrush.Transform>
             </LinearGradientBrush>
           </Viewbox.Resources>
           <Canvas Height="70" Width="498">
-            <Rectangle Width="498" Height="70" Fill="{StaticResource BackgroundLinear}" />
+            <Rectangle Width="498" Height="70" Fill="{StaticResource TitleBackgroundLinear}" />
             <Path Data="M57.3906 37.0273H47V17.4219H56.9531V19.5H49.2969V26.0215H56.3789V28.0859H49.2969V34.9492H57.3906V37.0273Z" Fill="white" />
             <Path Data="M71.9178 19.5H66.2577V37.0273H63.9608V19.5H58.3143V17.4219H71.9178V19.5Z" Fill="white" />
             <Path Data="M98.0114 17.4219L92.4743 37.0273H89.7809L85.7477 22.6992C85.5746 22.0885 85.4697 21.4232 85.4333 20.7031H85.3786C85.3239 21.3776 85.2054 22.0339 85.0231 22.6719L80.9626 37.0273H78.2966L72.5544 17.4219H75.0837L79.2536 32.4609C79.4268 33.0898 79.5361 33.7461 79.5817 34.4297H79.6501C79.6957 33.9466 79.8369 33.2904 80.0739 32.4609L84.4079 17.4219H86.6091L90.7653 32.5703C90.9111 33.0898 91.0205 33.7005 91.0934 34.4023H91.1481C91.1846 33.9284 91.3076 33.2995 91.5173 32.5156L95.5231 17.4219H98.0114Z" Fill="white" />

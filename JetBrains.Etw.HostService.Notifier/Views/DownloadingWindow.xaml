@@ -11,7 +11,8 @@
         SizeToContent="Height"
         ResizeMode="NoResize"
         Width="500"
-        x:ClassModifier="internal">
+        x:ClassModifier="internal"
+        Background="#F7F7F7">
 
   <Window.DataContext>
     <viewModel:DownloadingViewModel />

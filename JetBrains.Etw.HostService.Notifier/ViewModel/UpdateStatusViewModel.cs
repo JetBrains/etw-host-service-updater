@@ -44,13 +44,13 @@ namespace JetBrains.Etw.HostService.Notifier.ViewModel
           if (updateRequest != null)
           {
             var version = updateRequest.Version;
-            UpdateMessage = $"The new version {version.Major}.{version.Minor} is available for downloading!";
+            UpdateMessage = $"There is a critical update available for JetBrains ETW Host Service (version {version})";
             HasUpdate = true;
           }
           else
           {
             HasUpdate = false;
-            UpdateMessage = "No update available";
+            UpdateMessage = "No updates are available for JetBrains ETW Host Service";
           }
 
           OnPropertyChanged(nameof(UpdateMessage));

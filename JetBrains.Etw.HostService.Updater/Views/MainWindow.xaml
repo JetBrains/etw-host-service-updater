@@ -1,0 +1,84 @@
+﻿<Window
+  x:Class="JetBrains.Etw.HostService.Updater.Views.MainWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:tb="http://www.hardcodet.net/taskbar"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:viewModel="clr-namespace:JetBrains.Etw.HostService.Updater.ViewModel"
+  mc:Ignorable="d"
+  x:ClassModifier="internal"
+  Visibility="Hidden"
+  Background="#F7F7F7">
+
+  <Window.DataContext>
+    <viewModel:UpdateStatusViewModel />
+  </Window.DataContext>
+
+  <tb:TaskbarIcon IconSource="/EtwHostService.ico" Visibility="Visible">
+    <tb:TaskbarIcon.TrayToolTip>
+      <Border
+        Visibility="{Binding Path=IsNotModalState,Converter={StaticResource BooleanToVisibilityConverter}}"
+        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+        Width="Auto" Height="Auto"
+        Margin="0,0,3,3"
+        Background="#F5F5F5">
+
+        <Border.Effect>
+          <DropShadowEffect Color="#B8B8B8" />
+        </Border.Effect>
+
+        <Border BorderThickness="1" BorderBrush="#959595">
+          <Grid Margin="16">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Viewbox Grid.Column="0" Grid.Row="0" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+              <Viewbox.Resources>
+                <LinearGradientBrush x:Key="IconForegroundLinear" StartPoint="24,49.3413" EndPoint="24,2.46925" MappingMode="RelativeToBoundingBox">
+                  <LinearGradientBrush.GradientStops>
+                    <GradientStopCollection>
+                      <GradientStop Offset="0.0923918" Color="#FDB60D" />
+                      <GradientStop Offset="0.9211" Color="#FF318C" />
+                    </GradientStopCollection>
+                  </LinearGradientBrush.GradientStops>
+                  <LinearGradientBrush.Transform>
+                    <ScaleTransform ScaleX="0.015" ScaleY="0.015" />
+                  </LinearGradientBrush.Transform>
+                </LinearGradientBrush>
+              </Viewbox.Resources>
+              <Canvas Height="48" Width="48">
+                <Path Data="M24 48C37.2549 48 48 37.2549 48 24C48 10.7451 37.2549 0 24 0C10.7451 0 0 10.7451 0 24C0 37.2549 10.7451 48 24 48Z" Fill="{StaticResource IconForegroundLinear}" />
+                <Path Data="M23.9999 10.2858C16.4571 10.2858 10.2856 16.4572 10.2856 24.0001C10.2856 31.5429 16.4571 37.7143 23.9999 37.7143C31.5428 37.7143 37.7142 31.5429 37.7142 24.0001C37.7142 16.4572 31.5428 10.2858 23.9999 10.2858ZM32.2285 23.6572L30.5142 24.6858C29.4856 25.0286 29.1428 26.0572 29.8285 26.7429L30.8571 29.1429C31.1999 29.8286 30.8571 30.8572 30.5142 31.2001L28.7999 32.2286C28.1142 32.5715 27.4285 32.5715 26.7428 32.2286L24.6856 30.5143C23.9999 29.8286 22.9714 29.8286 22.2856 30.5143L20.9142 31.8858C20.5714 32.5715 19.5428 32.5715 18.8571 31.8858L17.1428 30.8572C16.4571 30.5143 16.4571 29.4858 16.7999 28.8001L17.8285 26.4001C18.1714 25.7143 17.8285 24.6858 17.1428 24.3429L15.7714 23.6572C15.0856 23.3143 14.7428 22.2858 15.0856 21.6001L15.7714 19.5429C16.1142 18.8572 16.7999 18.1715 17.4856 18.5143L19.1999 18.8572C20.2285 18.8572 20.9142 18.5143 20.9142 17.4858L21.2571 15.7715C21.2571 15.0858 21.9428 14.4001 22.9714 14.4001H25.0285C25.7142 14.4001 26.3999 15.0858 26.7428 15.7715L27.0856 17.4858C27.0856 18.5143 28.1142 18.8572 28.7999 18.8572L30.8571 18.5143C31.5428 18.5143 32.5714 18.8572 32.5714 19.5429L33.2571 21.6001C33.2571 22.6286 32.9142 23.3143 32.2285 23.6572ZM23.9999 20.5715C22.2856 20.5715 20.5714 22.2858 20.5714 24.0001C20.5714 25.7143 21.9428 27.4286 23.9999 27.4286C25.7142 27.4286 27.4285 26.0572 27.4285 24.0001C27.4285 21.9429 25.7142 20.5715 23.9999 20.5715Z" Fill="black" />
+              </Canvas>
+            </Viewbox>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical" VerticalAlignment="Center"
+                        Margin="16 0 24 0">
+              <TextBlock TextWrapping="NoWrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12" FontWeight="Bold"
+                         Text="JetBrains ETW Host Service Updater" />
+              <TextBlock Margin="0 4 0 0" TextWrapping="Wrap" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="12"
+                         Text="{Binding Path=UpdateMessage}" />
+            </StackPanel>
+          </Grid>
+        </Border>
+      </Border>
+    </tb:TaskbarIcon.TrayToolTip>
+
+    <tb:TaskbarIcon.ContextMenu>
+      <ContextMenu Visibility="{Binding Path=IsNotModalState,Converter={StaticResource BooleanToVisibilityConverter}}">
+        <MenuItem Header="_About..." Click="OnAbout" />
+        <Separator />
+        <MenuItem Header="_What's new in update..." Click="OnWhatsNew" Visibility="{Binding Path=HasUpdate,Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <MenuItem Header="_Download and install update..." Click="OnDownloadAndInstall" Visibility="{Binding Path=HasUpdate,Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Separator Visibility="{Binding Path=HasUpdate,Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <MenuItem Header="_Quit" Click="OnQuit" />
+      </ContextMenu>
+    </tb:TaskbarIcon.ContextMenu>
+
+  </tb:TaskbarIcon>
+</Window>

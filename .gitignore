@@ -7,3 +7,4 @@ bin/
 packages/
 *.user
 *.Snk
+*.nuget

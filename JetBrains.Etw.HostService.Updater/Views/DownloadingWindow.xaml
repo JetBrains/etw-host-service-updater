@@ -36,7 +36,7 @@
     <DockPanel Grid.Row="1" LastChildFill="False" Margin="20">
       <Button DockPanel.Dock="Right"
               Width="76" Height="28"
-              Content="_Cancel" Click="OnCancel" />
+              IsCancel="True" Content="_Cancel" Click="OnCancel" />
     </DockPanel>
   </Grid>
 </Window>

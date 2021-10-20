@@ -15,7 +15,7 @@
     <viewModel:UpdateStatusViewModel />
   </Window.DataContext>
 
-  <tb:TaskbarIcon IconSource="/EtwHostService.ico" Visibility="Visible">
+  <tb:TaskbarIcon IconSource="/EtwHostService.ico" Visibility="Visible" MenuActivation="LeftOrRightClick">
     <tb:TaskbarIcon.TrayToolTip>
       <Border
         Visibility="{Binding Path=IsNotModalState,Converter={StaticResource BooleanToVisibilityConverter}}"

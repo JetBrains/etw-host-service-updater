@@ -22,7 +22,7 @@ namespace JetBrains.Etw.HostService.Updater.Views
     {
       if (options == null) throw new ArgumentNullException(nameof(options));
       myLogger = logger ?? throw new ArgumentNullException(nameof(logger));
-     
+
       myDownloadDelay = options.CheckInterval != null;
 
       var loggerContext = Logger.Context;
@@ -30,25 +30,26 @@ namespace JetBrains.Etw.HostService.Updater.Views
 
       void CheckForUpdate()
       {
-        UpdateRequest updateRequest;
         try
         {
           var installedVersion = options.CheckForVersion ?? VersionControl.GetInstalledVersion(logger);
-          updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion, anonymousPermanentUserId.GetOrGenerate()) : null;
+          var updateRequest = installedVersion != null ? UpdateChecker.Check(logger, options.BaseUri ?? UpdateChecker.PublicBaseUri, "EHS", installedVersion, anonymousPermanentUserId.GetOrGenerate()) : null;
+
+          Interlocked.Exchange(ref myUpdateRequest, updateRequest);
+          myViewModel.SetUpdateRequest(updateRequest);
+          if (updateRequest == null)
+          {
+            logger.Info($"{loggerContext} res=exit_no_update");
+            Application.Current.Shutdown();
+          }
         }
         catch (Exception e)
         {
           logger.Exception(e);
-          return;
-        }
-
-        Interlocked.Exchange(ref myUpdateRequest, updateRequest);
-        myViewModel.SetUpdateRequest(updateRequest);
-        if (updateRequest == null)
-        {
-          logger.Info($"{loggerContext} res=exit_no_update");
+          logger.Info($"{loggerContext} res=exit_exception");
           Application.Current.Shutdown();
         }
+
       }
 
       CheckForUpdate();

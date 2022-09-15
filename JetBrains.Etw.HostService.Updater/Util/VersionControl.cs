@@ -37,7 +37,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
       return foundVersions.Select(CheckVersion).SingleOrDefault();
     }
 
-    [CanBeNull]
+    [ContractAnnotation("null => null; notnull => notnull")]
     public static Version CheckVersion([CanBeNull] Version version)
     {
       if (version != null)

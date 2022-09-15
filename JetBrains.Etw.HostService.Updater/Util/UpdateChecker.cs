@@ -60,7 +60,8 @@ namespace JetBrains.Etw.HostService.Updater.Util
             {
               Architecture.X86 => "windows32",
               Architecture.X64 => "windows64",
-              _ => throw new ArgumentOutOfRangeException()
+              Architecture.Arm64 => "windowsArm64",
+              _ => throw new PlatformNotSupportedException($"Unsupported architecture {RuntimeInformation.OSArchitecture}")
             };
 
           using var json = JsonDocument.Parse(stream);

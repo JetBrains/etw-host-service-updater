@@ -21,7 +21,7 @@ function pack($_Runtime) {
     <version>' + $_PackageVersion + '</version>
     <title>JetBrains Etw Host Service Updater</title>
     <authors>Mikhail Pilin</authors>
-    <copyright>Copyright © ' + $(get-date -Format yyyy) + ' JetBrains s.r.o.</copyright>
+    <copyright>Copyright © 2021-' + $(get-date -Format yyyy) + ' JetBrains s.r.o.</copyright>
     <projectUrl>https://github.com/JetBrains/etw-host-service-updater</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">Apache-2.0</license>
@@ -42,5 +42,6 @@ function compileAndPack($_Runtime) {
   pack $_Runtime
 }
 
-compileAndPack "win-x64"    
-compileAndPack "win-x86"    
+compileAndPack "win-arm64"
+compileAndPack "win-x64"
+compileAndPack "win-x86"

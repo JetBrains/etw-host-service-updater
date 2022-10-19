@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Threading;
-using Ganss.XSS;
+using Ganss.Xss;
 using JetBrains.Annotations;
 
 namespace JetBrains.Etw.HostService.Updater.ViewModel
@@ -12,20 +12,20 @@ namespace JetBrains.Etw.HostService.Updater.ViewModel
   {
     private readonly Dispatcher myDispatcher;
 
-    private readonly HtmlSanitizer mySanitizer = new(
-      new[]
-        {
-          "h1", "h2", "h3", "h4", "h5", "h6",
-          "ul", "ol", "li",
-          "table", "colgroup", "col", "tr", "th", "td",
-          "br",
-          "p", "a", "b", "i", "u", "q", "em", "sup", "sub",
-          "pre", "code", "span"
-        },
-      null,
-      new[] {"href"},
-      new[] {"href"},
-      Enumerable.Empty<string>());
+    private readonly HtmlSanitizer mySanitizer = new(new HtmlSanitizerOptions
+      {
+        AllowedTags = new HashSet<string>
+          {
+            "h1", "h2", "h3", "h4", "h5", "h6",
+            "ul", "ol", "li",
+            "table", "colgroup", "col", "tr", "th", "td",
+            "br",
+            "p", "a", "b", "i", "u", "q", "em", "sup", "sub",
+            "pre", "code", "span"
+          },
+        AllowedAttributes = new HashSet<string> { "href" },
+        UriAttributes = new HashSet<string> { "href" }
+      });
 
     private string myHtml;
 

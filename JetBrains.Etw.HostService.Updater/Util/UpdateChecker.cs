@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
@@ -13,10 +12,12 @@ namespace JetBrains.Etw.HostService.Updater.Util
 {
   public static class UpdateChecker
   {
-    public enum Channel
+    [Flags]
+    public enum Channels
     {
-      Release,
-      EapAndRelease
+      Release = 0x1,
+      Rc = 0x2,
+      Eap = 0x4
     }
 
     public static readonly TimeSpan DefaultCheckInterval = TimeSpan.FromDays(1);
@@ -29,7 +30,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
       [NotNull] string productCode,
       [NotNull] Version productVersion,
       Guid anonymousPermanentUserId,
-      Channel channel = Channel.Release)
+      Channels channels = Channels.Release)
     {
       if (logger == null) throw new ArgumentNullException(nameof(logger));
       if (baseUri == null) throw new ArgumentNullException(nameof(baseUri));
@@ -38,7 +39,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
       if (!baseUri.IsAbsoluteUri) throw new ArgumentOutOfRangeException(nameof(baseUri));
 
       var loggerContext = Logger.Context;
-      logger.Info($"{loggerContext} productCode={productCode} productVersion={productVersion} channel={channel}");
+      logger.Info($"{loggerContext} productCode={productCode} productVersion={productVersion} channel={channels}");
 
       var query = ConvertToUriQuery(new SortedList<string, string>
         {
@@ -55,7 +56,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
 
       return checkUri.OpenStreamFromWeb(stream =>
         {
-          var releases = GetReleaseTypes(channel);
+          var releases = GetReleaseTypes(channels);
           var download = RuntimeInformation.OSArchitecture switch
             {
               Architecture.X86 => "windows32",
@@ -76,9 +77,13 @@ namespace JetBrains.Etw.HostService.Updater.Util
                   var version = releaseElement.GetPropertyEx("version").GetVersion();
                   if (version.Major != productVersion.Major) continue;
 
+                  // Note(ww898): https://youtrack.jetbrains.com/issue/JS-17230
+                  var isSecurityCritical = releaseElement.TryGetPropertyEx("isSecurityCritical")?.GetBoolean();
+                  if (isSecurityCritical != true) continue;
+
                   var type = releaseElement.GetPropertyEx("type").GetString();
                   if (releases.All(x => x != type)) continue;
-
+                  
                   // Note(ww898): Expect that versions are in descending order!
                   if (version <= productVersion)
                   {
@@ -128,6 +133,13 @@ namespace JetBrains.Etw.HostService.Updater.Util
         });
     }
 
+    private static JsonElement? TryGetPropertyEx(this JsonElement element, [NotNull] string propertyName)
+    {
+      if (element.TryGetProperty(propertyName, out var childElement))
+        return childElement;
+      return null;
+    }
+
     private static JsonElement GetPropertyEx(this JsonElement element, [NotNull] string propertyName)
     {
       if (element.TryGetProperty(propertyName, out var childElement))
@@ -168,15 +180,14 @@ namespace JetBrains.Etw.HostService.Updater.Util
       return RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
     }
 
-    [NotNull]
-    private static string[] GetReleaseTypes(Channel channel)
+    [ItemNotNull]
+    private static IReadOnlyCollection<string> GetReleaseTypes(Channels channels)
     {
-      return channel switch
-        {
-          Channel.Release => new[] { "release" },
-          Channel.EapAndRelease => new[] { "eap", "release" },
-          _ => throw new ArgumentOutOfRangeException(nameof(channel), channel, null)
-        };
+      var res = new List<string>();
+      if ((channels & Channels.Release) != 0) res.Add("release");
+      if ((channels & Channels.Rc) != 0) res.Add("rc");
+      if ((channels & Channels.Eap) != 0) res.Add("eap");
+      return res;
     }
 
     [NotNull]

@@ -39,7 +39,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
       if (!baseUri.IsAbsoluteUri) throw new ArgumentOutOfRangeException(nameof(baseUri));
 
       var loggerContext = Logger.Context;
-      logger.Info($"{loggerContext} productCode={productCode} productVersion={productVersion} channel={channels}");
+      logger.Info($"{loggerContext} productCode={productCode} productVersion={productVersion} channel={channels.ToString().Replace(" ", "")}");
 
       var query = ConvertToUriQuery(new SortedList<string, string>
         {

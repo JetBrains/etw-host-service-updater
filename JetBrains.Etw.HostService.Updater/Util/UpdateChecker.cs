@@ -57,11 +57,11 @@ namespace JetBrains.Etw.HostService.Updater.Util
       return checkUri.OpenStreamFromWeb(stream =>
         {
           var releases = GetReleaseTypes(channels);
-          var download = RuntimeInformation.OSArchitecture switch
+          var downloads = RuntimeInformation.OSArchitecture switch
             {
-              Architecture.X86 => "windows32",
-              Architecture.X64 => "windows64",
-              Architecture.Arm64 => "windowsArm64",
+              Architecture.X86 => new[] { "windows-x86", "windows32" },
+              Architecture.X64 => new[] { "windows-x64", "windows64" },
+              Architecture.Arm64 => new[] { "windows-arm64", "windowsArm64" },
               _ => throw new PlatformNotSupportedException($"Unsupported architecture {RuntimeInformation.OSArchitecture}")
             };
 
@@ -69,59 +69,55 @@ namespace JetBrains.Etw.HostService.Updater.Util
           foreach (var productElement in json.RootElement.EnumerateArray())
             try
             {
-              var code = productElement.GetPropertyEx("code").GetString();
+              var code = productElement.GetStringPropertyEx("code");
               if (code != productCode) continue;
               foreach (var releaseElement in productElement.GetPropertyEx("releases").EnumerateArray())
                 try
                 {
-                  var version = releaseElement.GetPropertyEx("version").GetVersion();
+                  var version = releaseElement.GetVersionPropertyEx("version");
                   if (version.Major != productVersion.Major) continue;
 
                   // Note(ww898): https://youtrack.jetbrains.com/issue/JS-17230
-                  var isSecurityCritical = releaseElement.TryGetPropertyEx("isSecurityCritical")?.GetBoolean();
+                  var isSecurityCritical = releaseElement.TryGetBooleanPropertyEx("isSecurityCritical");
                   if (isSecurityCritical != true) continue;
 
-                  var type = releaseElement.GetPropertyEx("type").GetString();
+                  var type = releaseElement.GetStringPropertyEx("type");
                   if (releases.All(x => x != type)) continue;
-                  
+
                   // Note(ww898): Expect that versions are in descending order!
                   if (version <= productVersion)
-                  {
-                    logger.Info($"{loggerContext} res=ignore version={version}");
-                    return null;
-                  }
+                    break;
 
-                  var whatsNewHtml = releaseElement.GetPropertyEx("whatsnew").GetString();
-                  foreach (var downloadProperty in releaseElement.GetPropertyEx("downloads").EnumerateObject())
-                    try
-                    {
-                      if (downloadProperty.Name != download) continue;
-                      var downloadElement = downloadProperty.Value;
-                      var link = downloadElement.GetPropertyEx("link").GetAbsoluteUri();
-                      var size = downloadElement.GetPropertyEx("size").GetInt64();
-                      var checksumLink = downloadElement.GetPropertyEx("checksumLink").GetAbsoluteUri();
-                      var signedChecksumLink = downloadElement.GetPropertyEx("signedChecksumLink").GetAbsoluteUri();
+                  var downloadsProperty = releaseElement.GetPropertyEx("downloads");
+                  var downloadProperty = downloads.Select(x => downloadsProperty.TryGetPropertyEx(x)).FirstOrDefault(x => x != null);
+                  if (downloadProperty == null) continue;
 
-                      logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
-                      return new UpdateRequest
-                        {
-                          Version = version,
-                          Link = link,
-                          Size = size,
-                          ChecksumLink = checksumLink,
-                          SignedChecksumLink = signedChecksumLink,
-                          WhatsNewHtml = whatsNewHtml
-                        };
-                    }
-                    catch (Exception e)
+                  var downloadElement = downloadProperty.Value;
+                  var size = downloadElement.GetInt64PropertyEx("size");
+                  var link = downloadElement.GetAbsoluteUriPropertyEx("link");
+                  var checksumLink = downloadElement.GetAbsoluteUriPropertyEx("checksumLink");
+                  var signedChecksumLink = downloadElement.GetAbsoluteUriPropertyEx("signedChecksumLink");
+
+                  var whatsNewHtml = releaseElement.GetStringPropertyEx("whatsnew");
+
+                  logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
+                  return new UpdateRequest
                     {
-                      logger.Exception(e);
-                    }
+                      Version = version,
+                      Link = link,
+                      Size = size,
+                      ChecksumLink = checksumLink,
+                      SignedChecksumLink = signedChecksumLink,
+                      WhatsNewHtml = whatsNewHtml
+                    };
                 }
                 catch (Exception e)
                 {
                   logger.Exception(e);
                 }
+
+              logger.Info($"{loggerContext} res=no_update_version version={productVersion}");
+              return null;
             }
             catch (Exception e)
             {
@@ -131,38 +127,6 @@ namespace JetBrains.Etw.HostService.Updater.Util
           logger.Info($"{loggerContext} res=no");
           return null;
         });
-    }
-
-    private static JsonElement? TryGetPropertyEx(this JsonElement element, [NotNull] string propertyName)
-    {
-      if (element.TryGetProperty(propertyName, out var childElement))
-        return childElement;
-      return null;
-    }
-
-    private static JsonElement GetPropertyEx(this JsonElement element, [NotNull] string propertyName)
-    {
-      if (element.TryGetProperty(propertyName, out var childElement))
-        return childElement;
-      throw new KeyNotFoundException($"Failed to find property with name {propertyName}");
-    }
-
-    [NotNull]
-    private static Uri GetAbsoluteUri(this JsonElement element)
-    {
-      var str = element.GetString();
-      if (Uri.TryCreate(str, UriKind.Absolute, out var res))
-        return res;
-      throw new FormatException($"Failed to parse the absolute URI value {str}");
-    }
-
-    [NotNull]
-    private static Version GetVersion(this JsonElement element)
-    {
-      var str = element.GetString();
-      if (Version.TryParse(str!, out var res))
-        return res;
-      throw new FormatException($"Failed to parse the version value {str}");
     }
 
     [NotNull]
@@ -175,10 +139,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
     }
 
     [NotNull]
-    private static string GetOsArchitecture()
-    {
-      return RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
-    }
+    private static string GetOsArchitecture() => RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
 
     [ItemNotNull]
     private static IReadOnlyCollection<string> GetReleaseTypes(Channels channels)
@@ -191,9 +152,8 @@ namespace JetBrains.Etw.HostService.Updater.Util
     }
 
     [NotNull]
-    private static string ConvertToUriQuery([NotNull] IEnumerable<KeyValuePair<string, string>> queries)
-    {
-      return queries
+    private static string ConvertToUriQuery([NotNull] IEnumerable<KeyValuePair<string, string>> queries) =>
+      queries
         .Aggregate(new StringBuilder(), (builder, pair) =>
           {
             if (builder.Length != 0)
@@ -204,6 +164,5 @@ namespace JetBrains.Etw.HostService.Updater.Util
               .Append(WebUtility.UrlEncode(pair.Value));
           })
         .ToString();
-    }
   }
 }

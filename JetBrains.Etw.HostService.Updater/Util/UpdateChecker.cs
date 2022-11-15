@@ -61,7 +61,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
             {
               Architecture.X86 => new[] { "windows-x86", "windows32" },
               Architecture.X64 => new[] { "windows-x64", "windows64" },
-              Architecture.Arm64 => new[] { "windows-arm64", "windowsArm64" },
+              Architecture.Arm64 => new[] { "windows-arm64", "windowsARM64" },
               _ => throw new PlatformNotSupportedException($"Unsupported architecture {RuntimeInformation.OSArchitecture}")
             };
 
@@ -101,6 +101,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
                   var whatsNewHtml = releaseElement.GetStringPropertyEx("whatsnew");
 
                   logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
+                  
                   return new UpdateRequest
                     {
                       Version = version,

@@ -77,6 +77,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
       }
     }
 
+    // ReSharper disable once InconsistentNaming
     public static Architecture GetOSArchitecture()
     {
       // Note(ww898): GetNativeSystemInfo() on Windows ARM64 returns 9(PROCESSOR_ARCHITECTURE_AMD64) instead of 12(PROCESSOR_ARCHITECTURE_ARM64) for X64 processes!!! So, I should use Kernel32Dll.IsWow64Process2() to detect real OS architecture.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using JetBrains.Annotations;
@@ -26,7 +27,7 @@ namespace JetBrains.Etw.HostService.Updater
       Exit += (_, _) => logFile.Close();
 
       var loggerContext = Logger.Context;
-      logger.Info($"{loggerContext} toolVersion={ToolVersion}");
+      logger.Info($"{loggerContext} toolVersion={ToolVersion} toolArchitecture={RuntimeInformation.ProcessArchitecture.ToPresentableString()} osArchitecture={KernelExtensions.GetOSArchitecture().ToPresentableString()}");
 
       var singleRunEvent = new EventWaitHandle(true, EventResetMode.ManualReset, "JB_EtwHostServiceUpdater." + VersionControl.MajorVersion, out var createdNew);
       Exit += (_, _) => singleRunEvent.Close();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
@@ -93,5 +94,15 @@ namespace JetBrains.Etw.HostService.Updater.Util
           _ => throw new PlatformNotSupportedException()
         };
     }
+
+    [NotNull]
+    public static string ToPresentableString(this Architecture architecture) => architecture switch
+      {
+        Architecture.X86 => "x86",
+        Architecture.X64 => "x64",
+        Architecture.Arm => "ARM",
+        Architecture.Arm64 => "ARM64",
+        _ => throw new PlatformNotSupportedException($"Unsupported architecture {RuntimeInformation.ProcessArchitecture}")
+      };
   }
 }

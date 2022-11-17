@@ -89,7 +89,7 @@
       <StackPanel Orientation="Vertical"
                   Margin="20">
         <TextBlock Style="{StaticResource h1}">
-          The ETW host service updater <TextBlock Text="{Binding Path=ToolVersion,StringFormat=v{0}}"/>
+          The ETW host service updater <TextBlock Text="{Binding Path=ProcessArchitecture}"/> <TextBlock Text="{Binding Path=ToolVersion,StringFormat=v{0}}"/>
         </TextBlock>
         <TextBlock Margin="0 5 0 0">
           Copyright © <TextBlock Text="{Binding Path=YearRange}"/> JetBrains s.r.o. <Hyperlink RequestNavigate="OnRequestNavigate" NavigateUri="https://www.jetbrains.com">www.jetbrains.com</Hyperlink>

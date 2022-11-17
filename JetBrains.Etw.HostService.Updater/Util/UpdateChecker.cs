@@ -57,12 +57,13 @@ namespace JetBrains.Etw.HostService.Updater.Util
       return checkUri.OpenStreamFromWeb(stream =>
         {
           var releases = GetReleaseTypes(channels);
-          var downloads = RuntimeInformation.OSArchitecture switch
+          var osArchitecture = KernelExtensions.GetOSArchitecture();
+          var downloads = osArchitecture switch
             {
               Architecture.X86 => new[] { "windows-x86", "windows32" },
               Architecture.X64 => new[] { "windows-x64", "windows64" },
               Architecture.Arm64 => new[] { "windows-arm64", "windowsARM64" },
-              _ => throw new PlatformNotSupportedException($"Unsupported architecture {RuntimeInformation.OSArchitecture}")
+              _ => throw new PlatformNotSupportedException($"Unsupported architecture {osArchitecture}")
             };
 
           using var json = JsonDocument.Parse(stream);

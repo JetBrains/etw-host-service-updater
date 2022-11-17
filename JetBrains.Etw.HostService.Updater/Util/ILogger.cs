@@ -2,7 +2,7 @@
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
-  public interface ILogger : DownloadPgpVerifier.ILogger
+  internal interface ILogger : DownloadPgpVerifier.ILogger
   {
     void Exception(Exception e);
   }

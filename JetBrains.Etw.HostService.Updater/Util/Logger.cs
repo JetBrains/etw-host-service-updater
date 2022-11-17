@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
-  public static class Logger
+  internal static class Logger
   {
     public const string Delimiter = "::";
 

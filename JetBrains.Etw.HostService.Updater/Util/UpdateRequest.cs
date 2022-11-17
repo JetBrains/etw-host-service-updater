@@ -2,7 +2,7 @@
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
-  public class UpdateRequest
+  internal class UpdateRequest
   {
     public Uri ChecksumLink;
     public Uri Link;

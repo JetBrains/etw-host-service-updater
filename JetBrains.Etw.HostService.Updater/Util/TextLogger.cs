@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
-  public class TextLogger : ILogger
+  internal class TextLogger : ILogger
   {
     private readonly object myLock = new();
     private readonly TextWriter myWriter;

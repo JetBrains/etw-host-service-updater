@@ -10,7 +10,7 @@ using JetBrains.DownloadPgpVerifier;
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
-  public static class UpdateChecker
+  internal static class UpdateChecker
   {
     [Flags]
     public enum Channels

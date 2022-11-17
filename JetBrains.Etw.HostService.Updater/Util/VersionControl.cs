@@ -6,7 +6,7 @@ using Microsoft.Deployment.WindowsInstaller;
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
-  public static class VersionControl
+  internal static class VersionControl
   {
     public static readonly int MajorVersion = typeof(App).Assembly.GetName().Version.Major;
 

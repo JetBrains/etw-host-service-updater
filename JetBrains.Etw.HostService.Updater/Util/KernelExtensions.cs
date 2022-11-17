@@ -102,7 +102,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
         Architecture.X64 => "x64",
         Architecture.Arm => "ARM",
         Architecture.Arm64 => "ARM64",
-        _ => throw new PlatformNotSupportedException($"Unsupported architecture {RuntimeInformation.ProcessArchitecture}")
+        _ => throw new PlatformNotSupportedException($"Unsupported architecture {architecture}")
       };
   }
 }

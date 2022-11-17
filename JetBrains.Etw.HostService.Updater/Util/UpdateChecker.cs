@@ -41,6 +41,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
       var loggerContext = Logger.Context;
       logger.Info($"{loggerContext} productCode={productCode} productVersion={productVersion} channel={channels.ToString().Replace(" ", "")}");
 
+      var osArchitecture = KernelExtensions.GetOSArchitecture();
       var query = ConvertToUriQuery(new SortedList<string, string>
         {
           { "code", productCode },
@@ -49,7 +50,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
           { "buildVersion", productVersion.Build.ToString() },
           { "uid", anonymousPermanentUserId.ToString("D") },
           { "os", GetOsName() },
-          { "arch", GetOsArchitecture() }
+          { "arch", osArchitecture.ToPresentableString() }
         });
       var checkUri = new Uri(baseUri.ToDirectoryUri(), "products?" + query);
       logger.Info($"{loggerContext} checkUri={checkUri}");
@@ -57,7 +58,6 @@ namespace JetBrains.Etw.HostService.Updater.Util
       return checkUri.OpenStreamFromWeb(stream =>
         {
           var releases = GetReleaseTypes(channels);
-          var osArchitecture = KernelExtensions.GetOSArchitecture();
           var downloads = osArchitecture switch
             {
               Architecture.X86 => new[] { "windows-x86", "windows32" },
@@ -139,9 +139,6 @@ namespace JetBrains.Etw.HostService.Updater.Util
       var osVersion = Environment.OSVersion.Version;
       return $"Windows {osVersion.Major}.{osVersion.Minor}.{osVersion.Build}";
     }
-
-    [NotNull]
-    private static string GetOsArchitecture() => RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
 
     [ItemNotNull]
     private static IReadOnlyCollection<string> GetReleaseTypes(Channels channels)

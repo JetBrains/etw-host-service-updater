@@ -14,7 +14,7 @@
     <Company>JetBrains s.r.o.</Company>
     <Copyright>Copyright © 2021-$([System.DateTime]::Now.ToString('yyyy')) JetBrains s.r.o.</Copyright>
     <Authors>Mikhail Pilin</Authors>
-    <Version>16.1.0-preview5</Version>
+    <Version>16.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>

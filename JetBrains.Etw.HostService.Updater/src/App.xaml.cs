@@ -7,6 +7,7 @@ using System.Windows;
 using JetBrains.Annotations;
 using JetBrains.Etw.HostService.Updater.Util;
 using JetBrains.Etw.HostService.Updater.Views;
+using JetBrains.HabitatDetector;
 
 namespace JetBrains.Etw.HostService.Updater
 {
@@ -27,7 +28,7 @@ namespace JetBrains.Etw.HostService.Updater
       Exit += (_, _) => logFile.Close();
 
       var loggerContext = Logger.Context;
-      logger.Info($"{loggerContext} toolVersion={ToolVersion} toolArchitecture={RuntimeInformation.ProcessArchitecture.ToPresentableString()} osArchitecture={KernelExtensions.GetOSArchitecture().ToPresentableString()}");
+      logger.Info($"{loggerContext} toolVersion={ToolVersion} toolArchitecture={HabitatInfo.ProcessArchitecture.ToPresentableString()} osArchitecture={HabitatInfo.OSArchitecture.ToPresentableString()}");
 
       var singleRunEvent = new EventWaitHandle(true, EventResetMode.ManualReset, "JB_EtwHostServiceUpdater." + VersionControl.MajorVersion, out var createdNew);
       Exit += (_, _) => singleRunEvent.Close();

@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net461;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net461;net6.0-windows</TargetFrameworks>
     <RootNamespace>JetBrains.Etw.HostService.Updater.Tests</RootNamespace>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>10</LangVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
@@ -12,6 +12,6 @@
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\JetBrains.Etw.HostService.Updater\JetBrains.Etw.HostService.Updater.csproj" />
+    <ProjectReference Include="..\src\JetBrains.Etw.HostService.Updater.csproj" />
   </ItemGroup>
 </Project>

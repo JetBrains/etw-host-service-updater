@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using JetBrains.Annotations;
 using JetBrains.DownloadPgpVerifier;
+using JetBrains.HabitatDetector;
 
 namespace JetBrains.Etw.HostService.Updater.Util
 {
@@ -41,7 +42,6 @@ namespace JetBrains.Etw.HostService.Updater.Util
       var loggerContext = Logger.Context;
       logger.Info($"{loggerContext} productCode={productCode} productVersion={productVersion} channel={channels.ToString().Replace(" ", "")}");
 
-      var osArchitecture = KernelExtensions.GetOSArchitecture();
       var query = ConvertToUriQuery(new SortedList<string, string>
         {
           { "code", productCode },
@@ -50,7 +50,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
           { "buildVersion", productVersion.Build.ToString() },
           { "uid", anonymousPermanentUserId.ToString("D") },
           { "os", GetOsName() },
-          { "arch", osArchitecture.ToPresentableString() }
+          { "arch", HabitatInfo.OSArchitecture.ToPresentableString() }
         });
       var checkUri = new Uri(baseUri.ToDirectoryUri(), "products?" + query);
       logger.Info($"{loggerContext} checkUri={checkUri}");
@@ -58,12 +58,16 @@ namespace JetBrains.Etw.HostService.Updater.Util
       return checkUri.OpenStreamFromWeb(stream =>
         {
           var releases = GetReleaseTypes(channels);
-          var downloads = osArchitecture switch
+          var downloads = new[]
             {
-              Architecture.X86 => new[] { "windows-x86", "windows32" },
-              Architecture.X64 => new[] { "windows-x64", "windows64" },
-              Architecture.Arm64 => new[] { "windows-arm64", "windowsARM64" },
-              _ => throw new PlatformNotSupportedException($"Unsupported OS architecture {osArchitecture.ToPresentableString()}")
+              HabitatInfo.OSRuntimeIdString,
+              HabitatInfo.OSArchitecture switch
+                {
+                  JetArchitecture.X86 => "windows32",
+                  JetArchitecture.X64 => "windows64",
+                  JetArchitecture.Arm64 => "windowsARM64",
+                  _ => throw new PlatformNotSupportedException($"Unsupported OS architecture {HabitatInfo.OSArchitecture.ToPresentableString()}")
+                }
             };
 
           using var json = JsonDocument.Parse(stream);

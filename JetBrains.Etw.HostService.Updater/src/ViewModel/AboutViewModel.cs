@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Text;
 using JetBrains.Annotations;
-using JetBrains.Etw.HostService.Updater.Util;
+using JetBrains.HabitatDetector;
 
 namespace JetBrains.Etw.HostService.Updater.ViewModel
 {
@@ -13,7 +12,7 @@ namespace JetBrains.Etw.HostService.Updater.ViewModel
     private const int FirstYear = 2021;
 
     public string ToolVersion => App.ToolVersion;
-    public string ProcessArchitecture => RuntimeInformation.ProcessArchitecture.ToPresentableString();
+    public string ProcessArchitecture => HabitatInfo.ProcessArchitecture.ToPresentableString();
 
     public string YearRange
     {

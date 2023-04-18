@@ -44,7 +44,7 @@ namespace JetBrains.Etw.HostService.Updater.ViewModel
           if (updateRequest != null)
           {
             var version = updateRequest.Version;
-            UpdateMessage = $"There is a critical update v{version} available for JetBrains ETW Host Service";
+            UpdateMessage = $"There is a critical update available for the JetBrains ETW Host Service (new version {version})";
             HasUpdate = true;
           }
           else

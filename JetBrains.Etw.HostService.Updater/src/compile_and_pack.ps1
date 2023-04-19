@@ -7,7 +7,7 @@ $ErrorActionPreference=[System.Management.Automation.ActionPreference]::Stop
 
 
 [xml]$_Project=Get-Content JetBrains.Etw.HostService.Updater.csproj
-$_Framework="net461"
+$_Framework="net462"
 $_PackageVersion=$_Project.Project.PropertyGroup.Version
 
 Write-Host "Frameworks:" $_Framework

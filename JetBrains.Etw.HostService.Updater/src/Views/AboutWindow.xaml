@@ -11,25 +11,24 @@
         SizeToContent="Height"
         ResizeMode="NoResize"
         x:ClassModifier="internal"
-        Height="300" Width="500"
+        Height="Auto" Width="500"
         Background="#F7F7F7">
-  
+
   <Window.DataContext>
     <viewModel:AboutViewModel />
   </Window.DataContext>
 
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="*"/>
-      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
-    
+
     <StackPanel Orientation="Vertical">
-      
       <Grid Height="70">
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto"/>
-          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Viewbox Stretch="Uniform">
@@ -83,39 +82,56 @@
             <Path Data="M29.4999 17.5027C27.5221 17.5027 25.5887 18.0892 23.9443 19.188C22.2998 20.2868 21.0181 21.8486 20.2612 23.6759C19.5043 25.5031 19.3063 27.5138 19.6922 29.4536C20.078 31.3934 21.0304 33.1752 22.4289 34.5737C23.8275 35.9722 25.6093 36.9246 27.5491 37.3105C29.4889 37.6963 31.4995 37.4983 33.3268 36.7414C35.154 35.9845 36.7158 34.7028 37.8146 33.0583C38.9134 31.4138 39.4999 29.4804 39.4999 27.5026C39.4999 26.1894 39.2413 24.8891 38.7387 23.6758C38.2362 22.4626 37.4996 21.3602 36.571 20.4316C35.6424 19.503 34.54 18.7664 33.3268 18.2639C32.1135 17.7613 30.8131 17.5027 29.4999 17.5027ZM35.5215 27.2669L34.1683 27.9803C33.8889 28.1276 33.6784 28.3785 33.5819 28.6793C33.4855 28.98 33.5107 29.3066 33.6522 29.589L34.4424 31.1653C34.5706 31.421 34.6038 31.7139 34.5361 31.9918C34.4684 32.2697 34.3042 32.5146 34.0728 32.6827L32.8875 33.5439C32.6584 33.7103 32.3781 33.7909 32.0957 33.7716C31.8132 33.7523 31.5465 33.6343 31.3422 33.4383L30.0425 32.1911C29.8164 31.9741 29.5148 31.8536 29.2014 31.855C28.888 31.8564 28.5875 31.9796 28.3633 32.1986L27.301 33.2363C27.0971 33.4355 26.8294 33.556 26.5452 33.5767C26.261 33.5974 25.9786 33.5169 25.7481 33.3494L24.5573 32.4842C24.3284 32.318 24.1652 32.0766 24.0962 31.8023C24.0272 31.528 24.0567 31.2382 24.1795 30.9834L24.9806 29.3223C25.1156 29.0424 25.1374 28.7212 25.0415 28.4256C24.9456 28.13 24.7394 27.8827 24.4658 27.7353L23.469 27.1983C23.2201 27.0643 23.0262 26.8471 22.921 26.5848C22.8159 26.3224 22.8061 26.0315 22.8934 25.7627L23.3569 24.3363C23.4433 24.0705 23.6192 23.8429 23.8547 23.6923C24.0902 23.5418 24.3707 23.4776 24.6482 23.5108L25.8866 23.6589C26.1893 23.6951 26.4944 23.6154 26.7408 23.4359C26.9871 23.2564 27.1564 22.9903 27.2147 22.6911L27.4506 21.4796C27.5042 21.2047 27.6517 20.9569 27.8678 20.7788C28.084 20.6007 28.3553 20.5033 28.6354 20.5033H30.1301C30.4132 20.5033 30.6873 20.6028 30.9045 20.7845C31.1217 20.9661 31.2681 21.2183 31.3182 21.4969L31.5526 22.8019C31.6075 23.1073 31.7777 23.3798 32.0282 23.5629C32.2786 23.746 32.5898 23.8256 32.8974 23.7853L34.3447 23.5957C34.6241 23.5591 34.9076 23.6214 35.1459 23.7718C35.3842 23.9223 35.5624 24.1514 35.6495 24.4195L36.1065 25.8262C36.1944 26.0968 36.1839 26.3898 36.0769 26.6533C35.9698 26.9169 35.7731 27.1343 35.5215 27.2669ZM29.5 25.0735C29.0195 25.0735 28.5499 25.216 28.1504 25.4829C27.7509 25.7498 27.4396 26.1292 27.2557 26.5731C27.0719 27.0169 27.0238 27.5053 27.1175 27.9765C27.2112 28.4477 27.4426 28.8806 27.7823 29.2203C28.122 29.56 28.5549 29.7914 29.0261 29.8851C29.4973 29.9788 29.9857 29.9307 30.4296 29.7469C30.8734 29.563 31.2528 29.2517 31.5197 28.8522C31.7866 28.4527 31.9291 27.9831 31.9291 27.5026C31.9291 27.1836 31.8663 26.8678 31.7442 26.5731C31.6221 26.2783 31.4432 26.0106 31.2176 25.785C30.9921 25.5594 30.7243 25.3805 30.4296 25.2584C30.1348 25.1363 29.819 25.0735 29.5 25.0735Z" Fill="white" />
           </Canvas>
         </Viewbox>
-        
       </Grid>
-      
-      <StackPanel Orientation="Vertical"
-                  Margin="20">
+
+      <Grid Margin="20">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
         <TextBlock Style="{StaticResource h1}">
-          The ETW host service updater <TextBlock Text="{Binding Path=ProcessArchitecture}"/> <TextBlock Text="{Binding Path=ToolVersion,StringFormat=v{0}}"/>
+          The ETW host service updater <TextBlock Text="{Binding Path=ProcessArchitecture}" /> <TextBlock Text="{Binding Path=ToolVersion,StringFormat=v{0}}" />
         </TextBlock>
-        <TextBlock Margin="0 5 0 0">
-          Copyright © <TextBlock Text="{Binding Path=YearRange}"/> JetBrains s.r.o. <Hyperlink RequestNavigate="OnRequestNavigate" NavigateUri="https://www.jetbrains.com">www.jetbrains.com</Hyperlink>
+
+        <TextBlock Grid.Row="1" Margin="0 5 0 0">
+          Copyright © <TextBlock Text="{Binding Path=YearRange}" /> JetBrains s.r.o. <Hyperlink RequestNavigate="OnRequestNavigate" NavigateUri="https://www.jetbrains.com">www.jetbrains.com</Hyperlink>
         </TextBlock>
-        
-        <TextBlock Style="{StaticResource h2}" 
-                   Margin="0 20 0 5">
+
+        <TextBlock Grid.Row="2" Style="{StaticResource h2}" Margin="0 20 0 5">
           Powered by open-source software:
         </TextBlock>
-        <TextBlock>
-          Hardcodet.NotifyIcon.Wpf (<Hyperlink RequestNavigate="OnRequestNavigate" NavigateUri="https://raw.githubusercontent.com/hardcodet/wpf-notifyicon/master/LICENSE">CPOL 1.02</Hyperlink>)
-        </TextBlock>
-        <TextBlock>
-          HtmlSanitizer (<Hyperlink RequestNavigate="OnRequestNavigate" NavigateUri="https://licenses.nuget.org/MIT">MIT</Hyperlink>)
-        </TextBlock>
-      </StackPanel>
-      
+
+        <ItemsControl Grid.Row="3" Margin="5 0 0 0" ItemsSource="{Binding Licenses}" Grid.IsSharedSizeScope="True">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate DataType="{x:Type viewModel:LicenseItemViewModel}">
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="Auto" SharedSizeGroup="PackageId" />
+                  <ColumnDefinition Width="Auto" SharedSizeGroup="PackageVersion" />
+                  <ColumnDefinition Width="*" SharedSizeGroup="License" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Margin="0,0,5,0" Text="{Binding PackageId}" />
+                <TextBlock Grid.Column="1" Margin="0,0,5,0" Text="{Binding PackageVersion}" />
+                <TextBlock Grid.Column="2">
+                  <Hyperlink RequestNavigate="OnRequestNavigate" NavigateUri="{Binding LicenseUri}">
+                    <TextBlock Text="{Binding LicenseName}"></TextBlock>
+                  </Hyperlink>
+                </TextBlock>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Grid>
     </StackPanel>
-    
+
     <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="#C2C2C2">
       <DockPanel LastChildFill="False" Margin="20">
-        <Button DockPanel.Dock="Right" 
-                Width="76" Height="28" 
-                IsDefault="True" IsCancel="True" Content="_OK" />
+        <Button DockPanel.Dock="Right" Width="76" Height="28" IsDefault="True" IsCancel="True" Content="_OK" />
       </DockPanel>
     </Border>
   </Grid>
-  
+
 </Window>

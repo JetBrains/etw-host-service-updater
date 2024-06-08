@@ -14,11 +14,12 @@ namespace JetBrains.Etw.HostService.Updater.Util
   internal static class UpdateChecker
   {
     [Flags]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ReSharper", "InconsistentNaming")]
     public enum Channels
     {
-      Release = 0x1,
-      Rc = 0x2,
-      Eap = 0x4
+      RTM = 0x1,
+      RC = 0x2,
+      EAP = 0x4
     }
 
     public static readonly TimeSpan DefaultCheckInterval = TimeSpan.FromDays(1);
@@ -31,7 +32,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
       [NotNull] string productCode,
       [NotNull] Version productVersion,
       Guid anonymousPermanentUserId,
-      Channels channels = Channels.Release)
+      Channels channels = Channels.RTM)
     {
       if (logger == null) throw new ArgumentNullException(nameof(logger));
       if (baseUri == null) throw new ArgumentNullException(nameof(baseUri));
@@ -106,7 +107,7 @@ namespace JetBrains.Etw.HostService.Updater.Util
                   var whatsNewHtml = releaseElement.GetStringPropertyEx("whatsnew");
 
                   logger.Info($"{loggerContext} res=found version={version} size={size}\n\tlink={link}\n\tchecksumLink={checksumLink}\n\tsignedChecksumLink={signedChecksumLink}");
-                  
+
                   return new UpdateRequest
                     {
                       Version = version,
@@ -148,9 +149,9 @@ namespace JetBrains.Etw.HostService.Updater.Util
     private static IReadOnlyCollection<string> GetReleaseTypes(Channels channels)
     {
       var res = new List<string>();
-      if ((channels & Channels.Release) != 0) res.Add("release");
-      if ((channels & Channels.Rc) != 0) res.Add("rc");
-      if ((channels & Channels.Eap) != 0) res.Add("eap");
+      if ((channels & Channels.RTM) != 0) res.Add("release");
+      if ((channels & Channels.RC) != 0) res.Add("rc");
+      if ((channels & Channels.EAP) != 0) res.Add("eap");
       return res;
     }
 

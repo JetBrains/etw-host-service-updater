@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using JetBrains.Annotations;
@@ -20,7 +19,7 @@ namespace JetBrains.Etw.HostService.Updater
     {
       var logDir = Path.Combine(Path.GetTempPath(), "JetLogs", "EtwHost");
       Directory.CreateDirectory(logDir);
-      
+
       var combine = Path.Combine(logDir, typeof(App).Namespace + $"_{DateTime.Now:yyyyMMdd_HHmmss}.log");
       var logFile = File.CreateText(combine);
       logFile.AutoFlush = true;

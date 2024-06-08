@@ -11,7 +11,6 @@ using JetBrains.DownloadPgpVerifier;
 using JetBrains.Etw.HostService.Updater.Progress;
 using JetBrains.Etw.HostService.Updater.Util;
 using JetBrains.Etw.HostService.Updater.ViewModel;
-using ILogger = JetBrains.Etw.HostService.Updater.Util.ILogger;
 
 namespace JetBrains.Etw.HostService.Updater.Views
 {

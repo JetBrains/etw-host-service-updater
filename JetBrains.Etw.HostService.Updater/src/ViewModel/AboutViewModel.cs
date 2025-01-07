@@ -26,15 +26,16 @@ namespace JetBrains.Etw.HostService.Updater.ViewModel
         return new LicenseItemViewModel[]
           {
             // @formatter:off
-            new("BouncyCastle.Cryptography"      , "2.4.0"   , "MIT License (2000-2024 Legion of the Bouncy Castle Inc.)", mitUri),
-            new("Hardcodet.NotifyIcon.Wpf"       , "1.1.0"   , "Code Project Open License 1.02"                          , new Uri("https://spdx.org/licenses/CPOL-1.02.html")),
-            new("HtmlSanitizer"                  , "8.0.865" , mitName + " (2013-2024 Michael Ganss)"                    , mitUri),
-            new("JetBrains.Annotations"          , "2023.3.0", mitName + " (2016-2024 JetBrains s.r.o.)"                 , mitUri),
-            new("JetBrains.DownloadPgpVerifier"  , "1.0.0"   , apache20Name                                              , apache20Uri),
-            new("JetBrains.FormatRipper"         , "2.2.1"   , apache20Name                                              , apache20Uri),
-            new("JetBrains.HabitatDetector"      , "1.4.1"   , apache20Name                                              , apache20Uri),
-            new("System.Text.Json"               , "8.0.3"   , mitName + " (Microsoft Corporation)"                      , mitUri),
-            new("WixToolset.Dtf.WindowsInstaller", "5.0.0"   , "Microsoft Reciprocal License"                            , new Uri("https://spdx.org/licenses/MS-RL.html")),
+            new("AngleSharp"                     , "0.17.1"  , mitName + " (2013-2024 AngleSharp)"                                  , mitUri),
+            new("AngleSharp.Css"                 , "0.17.0"  , mitName + " (2013-2024 AngleSharp)"                                  , mitUri),
+            new("BouncyCastle.Cryptography"      , "2.4.0"   , mitName + " (2000-2024 Legion of the Bouncy Castle Inc.)"            , mitUri),
+            new("Hardcodet.NotifyIcon.Wpf"       , "2.0.1"   , mitName + " (Philipp Sumi)"                                          , mitUri),
+            new("HtmlSanitizer"                  , "8.1.870" , mitName + " (2013-2016 Michael Ganss and HtmlSanitizer contributors)", mitUri),
+            new("JetBrains.Annotations"          , "2024.3.0", mitName + " (2016-2024 JetBrains s.r.o.)"                            , mitUri),
+            new("JetBrains.DownloadPgpVerifier"  , "1.0.1"   , apache20Name                                                         , apache20Uri),
+            new("JetBrains.FormatRipper"         , "2.2.2"   , apache20Name                                                         , apache20Uri),
+            new("JetBrains.HabitatDetector"      , "1.4.3"   , apache20Name                                                         , apache20Uri),
+            new("WixToolset.Dtf.WindowsInstaller", "5.0.2"   , "Microsoft Reciprocal License"                                       , new Uri("https://spdx.org/licenses/MS-RL.html")),
             // @formatter:on
           };
       }

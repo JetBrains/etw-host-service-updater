@@ -19,9 +19,9 @@ namespace JetBrains.Etw.HostService.Updater.Tests
       static void Check(byte[] origBytes, string origStr)
       {
         var str = origBytes.ToLoverHexString();
-        Assert.AreEqual(origStr, str);
+        Assert.That(str, Is.EqualTo(origStr));
         var res = str.FromHexString();
-        Assert.IsTrue(origBytes.SequenceEqual(res));
+        Assert.That(origBytes.SequenceEqual(res), Is.True);
       }
 
       Check(ourBytes0, "");
@@ -36,9 +36,9 @@ namespace JetBrains.Etw.HostService.Updater.Tests
       static void Check(byte[] origBytes, string origStr)
       {
         var str = origBytes.ToUpperHexString();
-        Assert.AreEqual(origStr, str);
+        Assert.That(str, Is.EqualTo(origStr));
         var res = str.FromHexString();
-        Assert.IsTrue(origBytes.SequenceEqual(res));
+        Assert.That(origBytes.SequenceEqual(res), Is.True);
       }
 
       Check(ourBytes0, "");

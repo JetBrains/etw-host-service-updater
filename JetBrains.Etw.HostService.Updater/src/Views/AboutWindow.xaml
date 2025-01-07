@@ -11,7 +11,7 @@
         SizeToContent="Height"
         ResizeMode="NoResize"
         x:ClassModifier="internal"
-        Height="Auto" Width="550"
+        Height="Auto" Width="620"
         Background="#F7F7F7">
 
   <Window.DataContext>
@@ -45,8 +45,8 @@
               </LinearGradientBrush.Transform>
             </LinearGradientBrush>
           </Viewbox.Resources>
-          <Canvas Height="70" Width="548">
-            <Rectangle Width="548" Height="70" Fill="{StaticResource TitleBackgroundLinear}" />
+          <Canvas Height="70" Width="618">
+            <Rectangle Width="618" Height="70" Fill="{StaticResource TitleBackgroundLinear}" />
             <Path Data="M56.9609 37H46.5703V17.3945H56.5234V19.4727H48.8672V25.9941H55.9492V28.0586H48.8672V34.9219H56.9609V37Z" Fill="white" />
             <Path Data="M71.5428 19.4727H65.8827V37H63.5858V19.4727H57.9393V17.3945H71.5428V19.4727Z" Fill="white" />
             <Path Data="M97.5817 17.3945L92.0446 37H89.3512L85.318 22.6719C85.1449 22.0612 85.0401 21.3958 85.0036 20.6758H84.9489C84.8942 21.3503 84.7757 22.0065 84.5934 22.6445L80.5329 37H77.8669L72.1247 17.3945H74.654L78.8239 32.4336C78.9971 33.0625 79.1065 33.7188 79.152 34.4023H79.2204C79.266 33.9193 79.4072 33.263 79.6442 32.4336L83.9782 17.3945H86.1794L90.3356 32.543C90.4815 33.0625 90.5908 33.6732 90.6637 34.375H90.7184C90.7549 33.901 90.8779 33.2721 91.0876 32.4883L95.0934 17.3945H97.5817Z" Fill="white" />

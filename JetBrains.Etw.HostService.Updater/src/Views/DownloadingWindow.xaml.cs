@@ -30,6 +30,8 @@ namespace JetBrains.Etw.HostService.Updater.Views
       var viewModel = new DownloadingViewModel();
       DataContext = viewModel;
 
+      SourceInitialized += (_, _) => this.BringToForeground();
+
       var deactivateSystemCloseButton = true;
       Closing += (_, args) =>
         {

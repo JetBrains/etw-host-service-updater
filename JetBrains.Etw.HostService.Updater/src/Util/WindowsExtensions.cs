@@ -17,11 +17,20 @@ namespace JetBrains.Etw.HostService.Updater.Util
     [DllImport("user32.dll", SetLastError = true)]
     private static extern int SetWindowLongW(IntPtr hwnd, int index, int value);
 
+    [DllImport("user32.dll")]
+    private static extern bool SetForegroundWindow(IntPtr hwnd);
+
     public static void HideMinimizeAndMaximizeButtons(this Window window)
     {
       var hwnd = new WindowInteropHelper(window).Handle;
       var style = GetWindowLongW(hwnd, GWL_STYLE);
       SetWindowLongW(hwnd, GWL_STYLE, style & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX);
+    }
+
+    public static void BringToForeground(this Window window)
+    {
+      var hwnd = new WindowInteropHelper(window).Handle;
+      SetForegroundWindow(hwnd);
     }
   }
 }

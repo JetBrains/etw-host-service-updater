@@ -24,7 +24,11 @@ namespace JetBrains.Etw.HostService.Updater.Views
       InitializeComponent();
       DataContext = myViewModel;
 
-      SourceInitialized += (_, _) => this.HideMinimizeAndMaximizeButtons();
+      SourceInitialized += (_, _) =>
+      {
+        this.HideMinimizeAndMaximizeButtons();
+        this.BringToForeground();
+      };
     }
 
     private void OnNavigating(object sender, NavigatingCancelEventArgs e)

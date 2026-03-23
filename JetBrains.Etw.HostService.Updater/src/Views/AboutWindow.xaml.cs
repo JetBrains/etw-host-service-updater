@@ -17,6 +17,8 @@ namespace JetBrains.Etw.HostService.Updater.Views
       myLogger = logger ?? throw new ArgumentNullException(nameof(logger));
       InitializeComponent();
       DataContext = new AboutViewModel();
+
+      SourceInitialized += (_, _) => this.BringToForeground();
     }
 
     public void OnRequestNavigate(object sender, RequestNavigateEventArgs e)

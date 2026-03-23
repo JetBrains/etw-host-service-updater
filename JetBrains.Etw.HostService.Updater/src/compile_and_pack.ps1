@@ -9,9 +9,11 @@ $ErrorActionPreference=[System.Management.Automation.ActionPreference]::Stop
 [xml]$_Project=Get-Content JetBrains.Etw.HostService.Updater.csproj
 $_Framework="net462"
 $_PackageVersion=$_Project.Project.PropertyGroup.Version
+$_Authors=$_Project.Project.PropertyGroup.Authors
 
 Write-Host "Frameworks:" $_Framework
 Write-Host "PackageVersion:" $_PackageVersion
+Write-Host "Authors:" $_Authors
 
 function pack($_Runtime) {
   $_File='<?xml version="1.0" encoding="utf-8"?>
@@ -20,7 +22,7 @@ function pack($_Runtime) {
     <id>JetBrains.Etw.HostService.Updater.' + $_Runtime + '</id>
     <version>' + $_PackageVersion + '</version>
     <title>JetBrains Etw Host Service Updater</title>
-    <authors>Mikhail Pilin</authors>
+    <authors>' + $_Authors + '</authors>
     <copyright>Copyright © 2021-' + $(get-date -Format yyyy) + ' JetBrains s.r.o.</copyright>
     <projectUrl>https://github.com/JetBrains/etw-host-service-updater</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>

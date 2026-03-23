@@ -13,8 +13,8 @@
     <ApplicationIcon>EtwHostService.ico</ApplicationIcon>
     <Company>JetBrains s.r.o.</Company>
     <Copyright>Copyright © 2021-$([System.DateTime]::Now.ToString('yyyy')) JetBrains s.r.o.</Copyright>
-    <Authors>Mikhail Pilin</Authors>
-    <Version>16.1.3-preview.1</Version>
+    <Authors>Valentin Grigorev, Mikhail Pilin</Authors>
+    <Version>16.1.3-preview.2</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using JetBrains.Annotations;
 using JetBrains.Etw.HostService.Updater.SharedStorage;
@@ -17,6 +18,8 @@ namespace JetBrains.Etw.HostService.Updater.Views
     private readonly ILogger myLogger;
     private readonly UpdateStatusViewModel myViewModel = new();
     private UpdateRequest myUpdateRequest;
+
+    [CanBeNull] private Version myShownBalloonVersion;
 
     public MainWindow([NotNull] ILogger logger, [NotNull] Options options)
     {
@@ -41,6 +44,13 @@ namespace JetBrains.Etw.HostService.Updater.Views
           {
             logger.Info($"{loggerContext} res=exit_no_update");
             Application.Current.Shutdown();
+            return;
+          }
+
+          var availableVersion = updateRequest.Version;
+          if (NotifyIcon != null && myShownBalloonVersion != availableVersion && myViewModel.IsNotModalState)
+          {
+            Dispatcher.BeginInvoke(new Action<Version>(ShowUpdateBalloon), availableVersion);
           }
         }
         catch (Exception e)
@@ -61,10 +71,44 @@ namespace JetBrains.Etw.HostService.Updater.Views
       InitializeComponent();
       DataContext = myViewModel;
 
+      Dispatcher.BeginInvoke(new Action<Version>(ShowUpdateBalloon), myUpdateRequest.Version);
+
       var timer = new DispatcherTimer {Interval = options.CheckInterval ?? UpdateChecker.DefaultCheckInterval};
       timer.Tick += (_, _) => CheckForUpdate();
       Closed += (_, _) => timer.Stop();
       timer.Start();
+    }
+
+    private void ShowUpdateBalloon([NotNull] Version version)
+    {
+      if (NotifyIcon == null || myUpdateRequest == null)
+        return;
+
+      CloseCurrentBalloon();
+
+      var balloon = new UpdateAvailableBalloon
+      {
+        DataContext = myViewModel
+      };
+
+      balloon.InstallClicked += (_, _) =>
+      {
+        CloseCurrentBalloon();
+        OnDownloadAndInstall(this, new RoutedEventArgs());
+      };
+
+      balloon.WhatsNewClicked += (_, _) => OnWhatsNew(this, new RoutedEventArgs());
+
+      balloon.DismissClicked += (_, _) => CloseCurrentBalloon();
+
+      myShownBalloonVersion = version;
+      NotifyIcon.ShowCustomBalloon(balloon, PopupAnimation.Slide, null);
+    }
+
+    private void CloseCurrentBalloon()
+    {
+      NotifyIcon?.CloseBalloon();
+      myShownBalloonVersion = null;
     }
 
     private void OnAbout(object sender, RoutedEventArgs e)

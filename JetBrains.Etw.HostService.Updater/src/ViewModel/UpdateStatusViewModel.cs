@@ -21,7 +21,7 @@ namespace JetBrains.Etw.HostService.Updater.ViewModel
 
     public bool IsNotModalState => myModalCounter == 0;
     public bool HasUpdate { get; private set; }
-    public string UpdateMessage { get; private set; }
+    public string UpdateVersion { get; private set; }
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -43,17 +43,15 @@ namespace JetBrains.Etw.HostService.Updater.ViewModel
         {
           if (updateRequest != null)
           {
-            var version = updateRequest.Version;
-            UpdateMessage = $"There is a critical update available for the JetBrains ETW Host Service (new version {version})";
+            UpdateVersion = updateRequest.Version.ToString();
             HasUpdate = true;
+            OnPropertyChanged(nameof(UpdateVersion));
           }
           else
           {
             HasUpdate = false;
-            UpdateMessage = "There are no updates available for JetBrains ETW Host Service";
           }
 
-          OnPropertyChanged(nameof(UpdateMessage));
           OnPropertyChanged(nameof(HasUpdate));
         }));
     }

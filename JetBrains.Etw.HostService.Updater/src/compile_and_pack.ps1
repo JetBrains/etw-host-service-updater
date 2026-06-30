@@ -31,6 +31,7 @@ function pack($_Runtime) {
   </metadata>
   <files>
     <file src="bin\Release\' + $_Framework + '\' + $_Runtime + '\publish\**\*" target="tools\' + $_Runtime + '" />
+    <file src="third-party-libraries.json" target="." />
   </files>
 </package>'
 

@@ -28,5 +28,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="EtwHostService.ico" />
+    <EmbeddedResource Include="third-party-libraries.json" />
   </ItemGroup>
 </Project>

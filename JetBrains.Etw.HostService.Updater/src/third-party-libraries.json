@@ -1,0 +1,72 @@
+[
+  {
+    "name": "AngleSharp",
+    "version": "0.17.1",
+    "url": "https://github.com/AngleSharp/AngleSharp",
+    "license": "MIT License (2013-2024 AngleSharp)",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "AngleSharp.Css",
+    "version": "0.17.0",
+    "url": "https://github.com/AngleSharp/AngleSharp.Css",
+    "license": "MIT License (2013-2024 AngleSharp)",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "BouncyCastle.Cryptography",
+    "version": "2.4.0",
+    "url": "https://github.com/bcgit/bc-csharp",
+    "license": "MIT License (2000-2024 Legion of the Bouncy Castle Inc.)",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "Hardcodet.NotifyIcon.Wpf",
+    "version": "1.1.0",
+    "url": "https://github.com/hardcodet/wpf-notifyicon",
+    "license": "MIT License (Philipp Sumi)",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "HtmlSanitizer",
+    "version": "8.1.870",
+    "url": "https://github.com/mganss/HtmlSanitizer",
+    "license": "MIT License (2013-2016 Michael Ganss and HtmlSanitizer contributors)",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "JetBrains.Annotations",
+    "version": "2024.3.0",
+    "url": "https://github.com/JetBrains/JetBrains.Annotations",
+    "license": "MIT License (2016-2024 JetBrains s.r.o.)",
+    "licenseUrl": "https://spdx.org/licenses/MIT.html"
+  },
+  {
+    "name": "JetBrains.DownloadPgpVerifier",
+    "version": "1.0.1",
+    "url": "https://github.com/JetBrains/download-pgp-verifier",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains.FormatRipper",
+    "version": "2.2.2",
+    "url": "https://github.com/JetBrains/format-ripper",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "JetBrains.HabitatDetector",
+    "version": "1.4.3",
+    "url": "https://github.com/JetBrains/habitat-detector",
+    "license": "Apache License 2.0",
+    "licenseUrl": "https://spdx.org/licenses/Apache-2.0.html"
+  },
+  {
+    "name": "WixToolset.Dtf.WindowsInstaller",
+    "version": "5.0.2",
+    "url": "https://github.com/wixtoolset/wix",
+    "license": "Microsoft Reciprocal License",
+    "licenseUrl": "https://spdx.org/licenses/MS-RL.html"
+  }
+]

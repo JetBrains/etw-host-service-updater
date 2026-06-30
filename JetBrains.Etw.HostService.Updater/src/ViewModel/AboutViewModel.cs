@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using JetBrains.Annotations;
+using JetBrains.Etw.HostService.Updater.Util;
 using JetBrains.HabitatDetector;
 
 namespace JetBrains.Etw.HostService.Updater.ViewModel
@@ -19,25 +23,22 @@ namespace JetBrains.Etw.HostService.Updater.ViewModel
     {
       get
       {
-        const string mitName = "MIT License";
-        const string apache20Name = "Apache License 2.0";
-        var mitUri = new Uri("https://spdx.org/licenses/MIT.html");
-        var apache20Uri = new Uri("https://spdx.org/licenses/Apache-2.0.html");
-        return new LicenseItemViewModel[]
-          {
-            // @formatter:off
-            new("AngleSharp"                     , "0.17.1"  , mitName + " (2013-2024 AngleSharp)"                                  , mitUri),
-            new("AngleSharp.Css"                 , "0.17.0"  , mitName + " (2013-2024 AngleSharp)"                                  , mitUri),
-            new("BouncyCastle.Cryptography"      , "2.4.0"   , mitName + " (2000-2024 Legion of the Bouncy Castle Inc.)"            , mitUri),
-            new("Hardcodet.NotifyIcon.Wpf"       , "1.1.0"   , mitName + " (Philipp Sumi)"                                          , mitUri),
-            new("HtmlSanitizer"                  , "8.1.870" , mitName + " (2013-2016 Michael Ganss and HtmlSanitizer contributors)", mitUri),
-            new("JetBrains.Annotations"          , "2024.3.0", mitName + " (2016-2024 JetBrains s.r.o.)"                            , mitUri),
-            new("JetBrains.DownloadPgpVerifier"  , "1.0.1"   , apache20Name                                                         , apache20Uri),
-            new("JetBrains.FormatRipper"         , "2.2.2"   , apache20Name                                                         , apache20Uri),
-            new("JetBrains.HabitatDetector"      , "1.4.3"   , apache20Name                                                         , apache20Uri),
-            new("WixToolset.Dtf.WindowsInstaller", "5.0.2"   , "Microsoft Reciprocal License"                                       , new Uri("https://spdx.org/licenses/MS-RL.html")),
-            // @formatter:on
-          };
+        var assembly = Assembly.GetExecutingAssembly();
+        const string resourceName = "JetBrains.Etw.HostService.Updater.third-party-libraries.json";
+        using var stream = assembly.GetManifestResourceStream(resourceName);
+        if (stream == null)
+          throw new InvalidOperationException($"Failed to find resource {resourceName}");
+
+        using var document = JsonDocument.Parse(stream);
+        return document.RootElement.EnumerateArray().Select(element =>
+        {
+          var name = element.GetStringPropertyEx("name");
+          var version = element.GetStringPropertyEx("version");
+          var url = element.GetAbsoluteUriPropertyEx("url");
+          var license = element.GetStringPropertyEx("license");
+          var licenseUrl = element.GetAbsoluteUriPropertyEx("licenseUrl");
+          return new LicenseItemViewModel(name, version, license, licenseUrl, url);
+        }).ToList();
       }
     }
 

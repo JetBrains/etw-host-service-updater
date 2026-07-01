@@ -27,6 +27,7 @@
     <PackageReference Include="WixToolset.Dtf.WindowsInstaller" Version="5.0.2" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\compile_and_pack.cs" Link="compile_and_pack.cs" />
     <Resource Include="EtwHostService.ico" />
     <EmbeddedResource Include="third-party-libraries.json" />
   </ItemGroup>

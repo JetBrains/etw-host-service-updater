@@ -117,7 +117,8 @@ void PrepareLayout(string runtime)
 
 void Pack(string runtime)
 {
-  string nuspecFile = Path.Combine(SourceDir, $"Package.{runtime}.nuspec");
+  Directory.CreateDirectory("out");
+  string nuspecFile = Path.Combine("out", $"Package.{runtime}.nuspec");
 
   string nuspec = File.ReadAllText(TemplateFile)
     .Replace("{{RUNTIME}}", EscapeXml(runtime))
@@ -135,11 +136,13 @@ void Pack(string runtime)
     "-nologo",
     "-t:Pack",
     $"-p:NuspecFile={Path.GetFullPath(nuspecFile)}",
-    $"-p:PackageOutputPath={Path.GetFullPath(SourceDir)}",
+    $"-p:PackageOutputPath={Path.GetFullPath("out")}",
     "-p:IsPackable=true",
     "-p:NoBuild=true",
     "-p:IncludeBuildOutput=false",
     "-p:EnableWindowsTargeting=true");
+
+  File.Delete(nuspecFile);
 }
 
 string GetMsBuildProperty(string propertyName) =>

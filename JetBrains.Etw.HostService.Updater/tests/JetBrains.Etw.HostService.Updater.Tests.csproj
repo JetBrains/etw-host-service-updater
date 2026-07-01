@@ -4,6 +4,8 @@
     <RootNamespace>JetBrains.Etw.HostService.Updater.Tests</RootNamespace>
     <LangVersion>10</LangVersion>
     <IsPackable>false</IsPackable>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="NUnit" Version="4.3.2" />

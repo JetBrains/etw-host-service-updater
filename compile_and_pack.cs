@@ -117,6 +117,9 @@ void PrepareLayout(string runtime)
 
 void Pack(string runtime)
 {
+  if (!shouldPrepareLayout)
+    RestorePackAssets(runtime);
+
   Directory.CreateDirectory("out");
   string nuspecFile = Path.Combine("out", $"Package.{runtime}.nuspec");
 
@@ -137,12 +140,29 @@ void Pack(string runtime)
     "-t:Pack",
     $"-p:NuspecFile={Path.GetFullPath(nuspecFile)}",
     $"-p:PackageOutputPath={Path.GetFullPath("out")}",
+    $"-p:TargetFrameworks={Framework}",
+    $"-p:TargetFramework={Framework}",
+    $"-p:RuntimeIdentifier={runtime}",
     "-p:IsPackable=true",
     "-p:NoBuild=true",
     "-p:IncludeBuildOutput=false",
     "-p:EnableWindowsTargeting=true");
 
   File.Delete(nuspecFile);
+}
+
+void RestorePackAssets(string runtime)
+{
+  Run(
+    DotNetSdkScript,
+    "msbuild",
+    ProjectFile,
+    "-nologo",
+    "-t:Restore",
+    $"-p:TargetFrameworks={Framework}",
+    $"-p:TargetFramework={Framework}",
+    $"-p:RuntimeIdentifier={runtime}",
+    "-p:EnableWindowsTargeting=true");
 }
 
 string GetMsBuildProperty(string propertyName) =>

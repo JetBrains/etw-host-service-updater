@@ -134,6 +134,8 @@ namespace JetBrains.Etw.HostService.Updater.Views
         if (dlg.ShowDialog() == true)
           try
           {
+            ScheduledTask.EnsureUpdaterTaskExists(myLogger);
+
             myLogger.Info($"{Logger.Context} res=running");
             using var process = Process.Start(new ProcessStartInfo
               {
